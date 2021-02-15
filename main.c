@@ -7,6 +7,7 @@
 
 Personagens personagem_principal;
 GLuint id_textura_personagem_principal;
+GLuint id_textura_fundo;
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -23,7 +24,7 @@ GLuint carregaTextura(const char* arquivo){
 }
 
 void desenhaPersonagemPrincipal(){
-    glClear(GL_COLOR_BUFFER_BIT);
+
     
     glColor3f(1,1,1);
     
@@ -51,9 +52,38 @@ void desenhaPersonagemPrincipal(){
         glDisable(GL_TEXTURE_2D);
         glFlush();
 }
+void desenhaFundo(){
+    
+    glColor3f(1,1,1);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, id_textura_fundo);
+    
+
+    
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f(0,0);
+        glVertex2f(0, 0);
+
+        glTexCoord2f(1,0);
+        glVertex2f(100,0);
+        
+        glTexCoord2f(1,1);
+        glVertex2f(100,100);
+
+        glTexCoord2f(0,1);
+        glVertex2f(0,100);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+}
+
 
 void desenhaMinhaCena(){
+    glClear(GL_COLOR_BUFFER_BIT);
+    desenhaFundo();
+    //glClear(GL_COLOR_BUFFER_BIT);
     desenhaPersonagemPrincipal();
+    glFlush();
 }
 
 void redimensionada(int width, int height){
@@ -100,6 +130,7 @@ void setup(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     id_textura_personagem_principal = carregaTextura("unnamed.png");
+    id_textura_fundo = carregaTextura("folha.png");
 
     personagem_principal.posX = 50;
     personagem_principal.posY = 20;
