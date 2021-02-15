@@ -155,15 +155,13 @@ void teclaIPressionada(int tecla, int x, int y){
         break;
     }
 }
-
-void setup(){
-    glClearColor(0,0,0,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+void defineTexturas(){
     id_textura_personagem_principal = carregaTextura("unnamed.png");
     id_textura_fundo = carregaTextura("folha.png");
     id_textura_inimigo = carregaTextura("zetsu.png");
+}
 
+void definePos(){
     personagem_principal.posX = 50;
     personagem_principal.posY = 10;
     personagem_principal.largura = 8;
@@ -173,6 +171,15 @@ void setup(){
     inimigo.posY = 65;
     inimigo.largura = 10;
     inimigo.altura = 10;
+}
+
+
+void setup(){
+    glClearColor(0,0,0,0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    defineTexturas();
+    definePos();
 }
 
 int main(int argc, char** argv){
