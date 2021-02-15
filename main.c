@@ -99,7 +99,7 @@ void setup(){
     glClearColor(0,0,0,0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    id_textura_personagem_principal = carregaTextura("itachi.png");
+    id_textura_personagem_principal = carregaTextura("unnamed.png");
 
     personagem_principal.posX = 50;
     personagem_principal.posY = 20;
