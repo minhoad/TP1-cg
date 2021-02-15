@@ -6,8 +6,10 @@
 #include"global.h"
 
 Personagens personagem_principal;
+Personagens inimigo;
 GLuint id_textura_personagem_principal;
 GLuint id_textura_fundo;
+GLuint id_textura_inimigo;
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -52,6 +54,33 @@ void desenhaPersonagemPrincipal(){
         glDisable(GL_TEXTURE_2D);
         glFlush();
 }
+void desenhaInimigo(){
+    glColor3f(1,1,1);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    glPushMatrix();
+    
+    glTranslatef(inimigo.posX, inimigo.posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f(0,0);
+        glVertex2f(-inimigo.largura/2, -inimigo.altura/2);
+
+        glTexCoord2f(1,0);
+        glVertex2f(inimigo.largura/2, -inimigo.altura/2);
+        
+        glTexCoord2f(1,1);
+        glVertex2f(inimigo.largura/2, inimigo.altura/2);
+
+        glTexCoord2f(0,1);
+        glVertex2f(-inimigo.largura/2, inimigo.altura/2);
+
+        glEnd();
+        glPopMatrix();
+        glDisable(GL_TEXTURE_2D);
+        glFlush();
+}
 void desenhaFundo(){
     
     glColor3f(1,1,1);
@@ -81,8 +110,10 @@ void desenhaFundo(){
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
     desenhaFundo();
-    //glClear(GL_COLOR_BUFFER_BIT);
+ 
     desenhaPersonagemPrincipal();
+
+    desenhaInimigo();
     glFlush();
 }
 
@@ -131,11 +162,17 @@ void setup(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     id_textura_personagem_principal = carregaTextura("unnamed.png");
     id_textura_fundo = carregaTextura("folha.png");
+    id_textura_inimigo = carregaTextura("zetsu.png");
 
     personagem_principal.posX = 50;
-    personagem_principal.posY = 20;
-    personagem_principal.largura = 10;
-    personagem_principal.altura = 10;
+    personagem_principal.posY = 10;
+    personagem_principal.largura = 8;
+    personagem_principal.altura = 8;
+
+    inimigo.posX = 50;
+    inimigo.posY = 65;
+    inimigo.largura = 10;
+    inimigo.altura = 10;
 }
 
 int main(int argc, char** argv){
