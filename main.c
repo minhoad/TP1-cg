@@ -6,11 +6,13 @@
 #include"global.h"
 #include<stdbool.h>
 
-Personagens personagem_principal;
+Jogador personagem_principal;
 Personagens inimigo;
+Arma shuriken;
 GLuint id_textura_personagem_principal;
 GLuint id_textura_fundo;
 GLuint id_textura_inimigo;
+GLuint id_textura_projetil;
 bool flag = true; // !=0
 
 GLuint carregaTextura(const char* arquivo){
@@ -54,7 +56,7 @@ void desenhaPersonagemPrincipal(){
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        //glFlush();
+        
 }
 void desenhaInimigo(){
     glColor3f(1,1,1);
@@ -81,7 +83,7 @@ void desenhaInimigo(){
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        //glFlush();
+       
 }
 void desenhaFundo(){
     
@@ -108,6 +110,32 @@ void desenhaFundo(){
     glDisable(GL_TEXTURE_2D);
 }
 
+void desenhaProjetil(){
+    glColor3f(1,1,1);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, id_textura_projetil);
+    glPushMatrix();
+
+    glTranslatef(shuriken.posX,shuriken.posY,0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f(0,0);
+        glVertex2f(-shuriken.largura/2, -shuriken.altura/2);
+
+        glTexCoord2f(1,0);
+        glVertex2f(shuriken.largura/2, -shuriken.altura/2);
+        
+        glTexCoord2f(1,1);
+        glVertex2f(shuriken.largura/2, shuriken.altura/2);
+
+        glTexCoord2f(0,1);
+        glVertex2f(-shuriken.largura/2, shuriken.altura/2);
+    glEnd();
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
+}
+
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
@@ -125,8 +153,16 @@ void desenhaMinhaCena(){
         
     }
     inimigo.posY -=21;
+    
+    if(shuriken.atirar){
+        desenhaProjetil();
+        shuriken.posY++;
+        if(shuriken.posY > 99){//QUando sair da tela
+            shuriken.atirar = false;  
+        }
+    }
     glutSwapBuffers();   
-   // glFlush();
+   
 }
 
 void redimensionada(int width, int height){
@@ -142,6 +178,14 @@ void teclaPressionada(unsigned char tecla, int x, int y){
     switch(tecla){
         case 27: //Esc
             exit(0);
+            break;
+        case 32: // espaço
+            if(!shuriken.atirar){
+                shuriken.posX  = personagem_principal.posX;
+                shuriken.posY  = personagem_principal.posY;
+                shuriken.atirar = true;
+                glutPostRedisplay();
+            }
             break;    
         default:
             break;        
@@ -163,16 +207,13 @@ void teclaIPressionada(int tecla, int x, int y){
         }
         glutPostRedisplay();
         break;
-    case 32: // space
-        // atirar
-        break;
     default:
         break;
     }
 }
 
 void gameloop(int tempo){
-      
+// DELIMITA ATÉ ONDE A TROPA VAI
     if(flag != 0){
         if(inimigo.posX <35){
             inimigo.posX++;        
@@ -191,17 +232,19 @@ void gameloop(int tempo){
             flag = !flag;
         }
     }
-    glutPostRedisplay();
-    glutTimerFunc(tempo, gameloop, tempo);
+// "BORDA" DA TELA
+    glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL
+    glutTimerFunc(tempo, gameloop, tempo);// CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
 }
 
 void defineTexturas(){
     id_textura_personagem_principal = carregaTextura("unnamed.png");
     id_textura_fundo = carregaTextura("folha.png");
     id_textura_inimigo = carregaTextura("zetsu.png");
+    id_textura_projetil = carregaTextura("shuriken.png");
 }
 
-void definePos(){
+void defineAtributos(){
     personagem_principal.posX = 50;
     personagem_principal.posY = 10;
     personagem_principal.largura = 8;
@@ -211,6 +254,10 @@ void definePos(){
     inimigo.posY = 80;
     inimigo.largura = 10;
     inimigo.altura = 10;
+
+    shuriken.largura = 6;
+    shuriken.altura = 6;
+    shuriken.atirar = false;
 }
 
 
@@ -219,7 +266,7 @@ void setup(){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     defineTexturas();
-    definePos();
+    defineAtributos();
 }
 
 int main(int argc, char** argv){
