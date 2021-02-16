@@ -4,12 +4,14 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include"global.h"
+#include<stdbool.h>
 
 Personagens personagem_principal;
 Personagens inimigo;
 GLuint id_textura_personagem_principal;
 GLuint id_textura_fundo;
 GLuint id_textura_inimigo;
+bool flag = true; // !=0
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -52,7 +54,7 @@ void desenhaPersonagemPrincipal(){
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        glFlush();
+        //glFlush();
 }
 void desenhaInimigo(){
     glColor3f(1,1,1);
@@ -79,7 +81,7 @@ void desenhaInimigo(){
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
-        glFlush();
+        //glFlush();
 }
 void desenhaFundo(){
     
@@ -112,9 +114,19 @@ void desenhaMinhaCena(){
     desenhaFundo();
  
     desenhaPersonagemPrincipal();
-
-    desenhaInimigo();
-    glFlush();
+    for(int j = 0; j<3;j++){
+        for(int i = 0; i<10;i++){
+            desenhaInimigo();            
+            inimigo.posX+=7;
+            
+        }
+        inimigo.posX -= 70;        
+        inimigo.posY+=7;
+        
+    }
+    inimigo.posY -=21;
+    glutSwapBuffers();   
+   // glFlush();
 }
 
 void redimensionada(int width, int height){
@@ -151,10 +163,38 @@ void teclaIPressionada(int tecla, int x, int y){
         }
         glutPostRedisplay();
         break;
+    case 32: // space
+        // atirar
+        break;
     default:
         break;
     }
 }
+
+void gameloop(int tempo){
+      
+    if(flag != 0){
+        if(inimigo.posX <35){
+            inimigo.posX++;        
+        }
+        else{
+            flag = !flag;        
+                  
+        }
+    }
+    else{
+        if(inimigo.posX>0){
+            inimigo.posX--;
+        }
+        else{
+                       
+            flag = !flag;
+        }
+    }
+    glutPostRedisplay();
+    glutTimerFunc(tempo, gameloop, tempo);
+}
+
 void defineTexturas(){
     id_textura_personagem_principal = carregaTextura("unnamed.png");
     id_textura_fundo = carregaTextura("folha.png");
@@ -167,8 +207,8 @@ void definePos(){
     personagem_principal.largura = 8;
     personagem_principal.altura = 8;
 
-    inimigo.posX = 50;
-    inimigo.posY = 65;
+    inimigo.posX = 0;
+    inimigo.posY = 80;
     inimigo.largura = 10;
     inimigo.altura = 10;
 }
@@ -197,6 +237,8 @@ int main(int argc, char** argv){
     glutReshapeFunc(redimensionada);
     glutKeyboardFunc(teclaPressionada);
     glutSpecialFunc(teclaIPressionada);
+    
+    glutTimerFunc(0,gameloop,132);   
 
     setup();
     glutMainLoop();
