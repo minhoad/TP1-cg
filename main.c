@@ -5,29 +5,14 @@
 #include<stdio.h>
 #include"global.h"
 #include<stdbool.h>
+#include"texturas.h"
 
 Jogador personagem_principal;
 Personagens inimigo;
 Arma shuriken;
-GLuint id_textura_personagem_principal;
-GLuint id_textura_fundo;
-GLuint id_textura_inimigo;
-GLuint id_textura_projetil;
+formacao matriz_inimigos[3][10];
+
 bool flag = true; // !=0
-
-GLuint carregaTextura(const char* arquivo){
-    GLuint id_textura = SOIL_load_OGL_texture(
-                                arquivo,
-                                SOIL_LOAD_AUTO,
-                                SOIL_CREATE_NEW_ID,
-                                SOIL_FLAG_INVERT_Y
-                                );                                                                                        
-    if(id_textura == 0){
-        printf("Erro SOIL: %s", SOIL_last_result());
-    }
-
-    return id_textura;
-}
 
 void desenhaPersonagemPrincipal(){
 
@@ -92,8 +77,6 @@ void desenhaFundo(){
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, id_textura_fundo);
     
-
-    
     glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(0,0);
         glVertex2f(0, 0);
@@ -136,26 +119,66 @@ void desenhaProjetil(){
     glDisable(GL_TEXTURE_2D);
 }
 
+void criaMatrizInimigos(){
+
+    for(int i=0;i<3;i++){
+        for(int j=0;j<10;j++){
+            matriz_inimigos[i][j].posX = inimigo.posX;
+            matriz_inimigos[i][j].posY = inimigo.posY;
+            matriz_inimigos[i][j].altura = inimigo.altura;
+            matriz_inimigos[i][j].largura = inimigo.largura;
+            if(matriz_inimigos[i][j].vivo==true)            
+                desenhaInimigo();
+            inimigo.posX+=7;          
+        }    
+        inimigo.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
+        inimigo.posY+=7;
+    }
+    inimigo.posY = 80;
+    
+}
+
+bool colisao(int posX_projetil,
+            int posY_projetil,
+            int largura_projetil,
+            int altura_projetil, 
+            int posX_inimigo, 
+            int posY_inimigo, 
+            int altura_inimigo, 
+            int largura_inimigo){
+
+    if(posY_projetil+altura_projetil == posY_inimigo){
+        if(posX_projetil+largura_projetil/2 >= posX_inimigo && posX_projetil+largura_projetil/2 <= posX_inimigo+largura_inimigo){
+            return true;        
+        }    
+    }
+    
+    
+    return false;
+}
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
     desenhaFundo();
- 
     desenhaPersonagemPrincipal();
-    for(int j = 0; j<3;j++){
-        for(int i = 0; i<10;i++){
-            desenhaInimigo();            
-            inimigo.posX+=7;
-            
-        }
-        inimigo.posX -= 70;        
-        inimigo.posY+=7;
-        
-    }
-    inimigo.posY -=21;
+
+    criaMatrizInimigos();
     
     if(shuriken.atirar){
         desenhaProjetil();
+        for(int i=0;i<3;i++){
+            for(int j=0;j<10;j++){
+
+                if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                           shuriken.altura, matriz_inimigos[i][j].posX,
+                           matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
+                           matriz_inimigos[i][j].largura)){
+
+                           matriz_inimigos[i][j].vivo = false; 
+                           shuriken.atirar = false;         
+                                                          }
+            }
+        }
         shuriken.posY++;
         if(shuriken.posY > 99){//QUando sair da tela
             shuriken.atirar = false;  
@@ -237,12 +260,6 @@ void gameloop(int tempo){
     glutTimerFunc(tempo, gameloop, tempo);// CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
 }
 
-void defineTexturas(){
-    id_textura_personagem_principal = carregaTextura("unnamed.png");
-    id_textura_fundo = carregaTextura("folha.png");
-    id_textura_inimigo = carregaTextura("zetsu.png");
-    id_textura_projetil = carregaTextura("shuriken.png");
-}
 
 void defineAtributos(){
     personagem_principal.posX = 50;
@@ -250,14 +267,19 @@ void defineAtributos(){
     personagem_principal.largura = 8;
     personagem_principal.altura = 8;
 
-    inimigo.posX = 0;
+    inimigo.posX = 7;
     inimigo.posY = 80;
-    inimigo.largura = 10;
-    inimigo.altura = 10;
+    inimigo.largura = 7;
+    inimigo.altura = 7;
 
-    shuriken.largura = 6;
-    shuriken.altura = 6;
+    shuriken.largura = 4;
+    shuriken.altura = 4;
     shuriken.atirar = false;
+    for(int i=0;i<3;i++){
+        for(int j = 0;j<10;j++){
+            matriz_inimigos[i][j].vivo = true;        
+        }    
+    }
 }
 
 
