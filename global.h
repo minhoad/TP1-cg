@@ -25,7 +25,13 @@ typedef struct{
     bool atirar;   
 }Arma;
 
-/*typedef struct{
-    
-}Buffs;
+typedef struct{
+    int posX;
+    int posY;
+    int largura;
+    int altura;
+    bool vivo;
+}formacao;
+
+
 // 3 shurikens; atirar mais rapido; vara ; em area*/
