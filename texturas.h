@@ -2,6 +2,8 @@ GLuint id_textura_personagem_principal;
 GLuint id_textura_fundo;
 GLuint id_textura_inimigo;
 GLuint id_textura_projetil;
+GLuint id_pause;
+GLuint id_textura_projetil_inimigo;
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -23,6 +25,8 @@ void defineTexturas(){
     id_textura_fundo = carregaTextura("folha.png");
     id_textura_inimigo = carregaTextura("zetsu.png");
     id_textura_projetil = carregaTextura("shuriken.png");
+    id_pause = carregaTextura("pausescreen.png");
+    id_textura_projetil_inimigo= carregaTextura("kunai.png");
 }
 
 
