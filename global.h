@@ -33,5 +33,6 @@ typedef struct{
     bool vivo;
 }formacao;
 
+int cont=0;
 
 // 3 shurikens; atirar mais rapido; vara ; em area*/
