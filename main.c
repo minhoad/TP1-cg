@@ -11,6 +11,8 @@
 
 void contador();
 void gameloop(int tempo);
+void reiniciar();
+void setup();
 
 Jogador personagem_principal;
 Personagens inimigo;
@@ -279,10 +281,23 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 glutTimerFunc(1000/33,gameloop,1); 
                 break;
             }
-            break;   
+            break; 
+        case 'r':
+        case 'R':
+            if(pause){
+                pause = false;   
+                reiniciar();  
+                glutTimerFunc(1000/33,gameloop,1);            
+            }
+            reiniciar();
+            break;  
         default:
             break;        
     }
+}
+void reiniciar(){
+    setup();
+    criaMatrizInimigos(); 
 }
 
 void teclaIPressionada(int tecla, int x, int y){
