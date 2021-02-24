@@ -1,10 +1,10 @@
-GLuint id_textura_personagem_principal;
-GLuint id_textura_fundo;
-GLuint id_textura_inimigo;
-GLuint id_textura_projetil;
-GLuint id_pause;
-GLuint id_textura_projetil_inimigo;
-
+GLuint id_textura_personagem_principal=0;
+GLuint id_textura_fundo=0;
+GLuint id_textura_inimigo=0;
+GLuint id_textura_projetil=0;
+GLuint id_pause=0;
+GLuint id_textura_projetil_inimigo=0;
+int contador_vezes_carrega_textura=1;
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -22,21 +22,25 @@ GLuint carregaTextura(const char* arquivo){
 
 
 void defineTexturas(int fase){
+ 
     switch(fase){
         case 1:
-            id_textura_personagem_principal = carregaTextura("unnamed.png");
-            id_textura_inimigo = carregaTextura("kakashi_intro.png");
-            id_textura_fundo = carregaTextura("cenario.png");
-            id_pause = carregaTextura("pausescreen.png");
-            id_textura_projetil = carregaTextura("shuriken.png");
+            if(contador_vezes_carrega_textura==1){
+                id_textura_personagem_principal = carregaTextura("unnamed.png");
+                id_textura_inimigo = carregaTextura("kakashi_intro.png");
+                id_textura_fundo = carregaTextura("cenario.png");
+                id_pause = carregaTextura("pausescreen.png");
+                id_textura_projetil = carregaTextura("shuriken.png");
+                contador_vezes_carrega_textura++;
+            }
             break;
         case 2:
-            id_textura_personagem_principal = carregaTextura("unnamed.png");
-            id_textura_fundo = carregaTextura("folha.png");
-            id_textura_inimigo = carregaTextura("zetsu.png");
-            id_textura_projetil = carregaTextura("shuriken.png");
-            id_pause = carregaTextura("pausescreen.png");
-            id_textura_projetil_inimigo= carregaTextura("kunai.png");
+            if(contador_vezes_carrega_textura==2){
+                id_textura_fundo = carregaTextura("folha.png");
+                id_textura_inimigo = carregaTextura("zetsu.png");
+                id_textura_projetil_inimigo= carregaTextura("kunai.png");
+                contador_vezes_carrega_textura++;
+            }            
             break;
         default:
             break;
