@@ -5,6 +5,7 @@ GLuint id_textura_projetil;
 GLuint id_pause;
 GLuint id_textura_projetil_inimigo;
 
+
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
                                 arquivo,
@@ -20,13 +21,26 @@ GLuint carregaTextura(const char* arquivo){
 }
 
 
-void defineTexturas(){
-    id_textura_personagem_principal = carregaTextura("unnamed.png");
-    id_textura_fundo = carregaTextura("folha.png");
-    id_textura_inimigo = carregaTextura("zetsu.png");
-    id_textura_projetil = carregaTextura("shuriken.png");
-    id_pause = carregaTextura("pausescreen.png");
-    id_textura_projetil_inimigo= carregaTextura("kunai.png");
+void defineTexturas(int fase){
+    switch(fase){
+        case 1:
+            id_textura_personagem_principal = carregaTextura("unnamed.png");
+            id_textura_inimigo = carregaTextura("kakashi_intro.png");
+            id_textura_fundo = carregaTextura("cenario.png");
+            id_pause = carregaTextura("pausescreen.png");
+            id_textura_projetil = carregaTextura("shuriken.png");
+            break;
+        case 2:
+            id_textura_personagem_principal = carregaTextura("unnamed.png");
+            id_textura_fundo = carregaTextura("folha.png");
+            id_textura_inimigo = carregaTextura("zetsu.png");
+            id_textura_projetil = carregaTextura("shuriken.png");
+            id_pause = carregaTextura("pausescreen.png");
+            id_textura_projetil_inimigo= carregaTextura("kunai.png");
+            break;
+        default:
+            break;
+    }
 }
 
 
