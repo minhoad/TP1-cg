@@ -19,9 +19,12 @@ Jogador personagem_principal;
 Personagens inimigo;
 Arma shuriken; // aliado
 Arma kunai; // inimigo
+formacao inimigo_primeira_fase;
 formacao matriz_inimigos[3][10];
 bool pause = false;
 bool flag = true; // !=0
+int fase=1;
+
 
 void desenhaPersonagemPrincipal(){
 
@@ -52,33 +55,34 @@ void desenhaPersonagemPrincipal(){
         glDisable(GL_TEXTURE_2D);
         
 }
-void desenhaInimigo(){
+void desenhaInimigo(int posX,int posY,int largura,int altura){
     glColor3f(1,1,1);
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
     glPushMatrix();
     
-    glTranslatef(inimigo.posX, inimigo.posY, 0);
+    glTranslatef(posX, posY, 0);
     
     glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(0,0);
-        glVertex2f(-inimigo.largura/2, -inimigo.altura/2);
+        glVertex2f(-largura/2, -altura/2);
 
         glTexCoord2f(1,0);
-        glVertex2f(inimigo.largura/2, -inimigo.altura/2);
+        glVertex2f(largura/2, -altura/2);
         
         glTexCoord2f(1,1);
-        glVertex2f(inimigo.largura/2, inimigo.altura/2);
+        glVertex2f(largura/2, altura/2);
 
         glTexCoord2f(0,1);
-        glVertex2f(-inimigo.largura/2, inimigo.altura/2);
+        glVertex2f(-largura/2, altura/2);
 
         glEnd();
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
        
 }
+
 void desenhaFundo(){
     
     glColor3f(1,1,1);
@@ -181,7 +185,7 @@ void criaMatrizInimigos(){
             matriz_inimigos[i][j].altura = inimigo.altura;
             matriz_inimigos[i][j].largura = inimigo.largura;
             if(matriz_inimigos[i][j].vivo==true)            
-                desenhaInimigo();
+                desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
             inimigo.posX+=7;          
         }    
         inimigo.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
@@ -215,33 +219,54 @@ bool colisao(int posX_projetil,
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
-    
+    defineTexturas(fase);
     desenhaFundo();
     desenhaPersonagemPrincipal();
 
-    criaMatrizInimigos();
-    
-    if(shuriken.atirar){
-        desenhaProjetil(1);
-        for(int i=0;i<3;i++){
-            for(int j=0;j<10;j++){
+    if(fase==1){
+        if(inimigo_primeira_fase.vivo)
+            desenhaInimigo(inimigo_primeira_fase.posX,inimigo_primeira_fase.posY,inimigo_primeira_fase.altura,inimigo_primeira_fase.largura);                        
+        
+        if(shuriken.atirar){
+            desenhaProjetil(1);  
+            if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                           shuriken.altura, inimigo_primeira_fase.posX,
+                           inimigo_primeira_fase.posY, inimigo_primeira_fase.altura,
+                           inimigo_primeira_fase.largura,inimigo_primeira_fase.vivo)){
 
-                if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                           shuriken.altura, matriz_inimigos[i][j].posX,
-                           matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
-                           matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
-
-                           matriz_inimigos[i][j].vivo = false;                            
+                           inimigo_primeira_fase.vivo = false;                            
                            shuriken.atirar = false;         
                                                           }
+            shuriken.posY+=2;
+            if(shuriken.posY > 99){//QUando sair da tela
+                shuriken.atirar = false;  
             }
-        }
-        shuriken.posY++;
-        if(shuriken.posY > 99){//QUando sair da tela
-            shuriken.atirar = false;  
-        }
+        }  
     }
 
+    else if(fase==2){
+        criaMatrizInimigos(); //2°fase
+        if(shuriken.atirar){
+            desenhaProjetil(1);
+            for(int i=0;i<3;i++){
+                for(int j=0;j<10;j++){
+
+                    if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                               shuriken.altura, matriz_inimigos[i][j].posX,
+                               matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
+                               matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
+
+                               matriz_inimigos[i][j].vivo = false;                            
+                               shuriken.atirar = false;         
+                                                              }
+                }
+            }
+            shuriken.posY++;
+            if(shuriken.posY > 99){//QUando sair da tela
+                shuriken.atirar = false;  
+            }
+        }
+    }
     if(pause)desenhaPause();
          
     //if(verificaFimDeFase())     
@@ -249,6 +274,29 @@ void desenhaMinhaCena(){
     glutSwapBuffers();   
    
 }
+void contadorFases(){
+    int contador_de_inimigos_mortos=0;   
+    if(fase==1){
+        if(!inimigo_primeira_fase.vivo){
+            fase++;        
+        }  
+    }
+   
+    if(fase==2){
+        for(int i=0;i<3;i++){
+            for(int j=0;j<10;j++){
+                if(matriz_inimigos[i][j].vivo==false){
+                    contador_de_inimigos_mortos++;            
+                }
+            }    
+        }
+        if(contador_de_inimigos_mortos==30){
+            fase++;
+        }   
+    }
+    contador_de_inimigos_mortos = 0;
+}
+
 
 bool verificaFimDeFase(){
     int contador_de_inimigos_mortos=0;
@@ -339,8 +387,8 @@ void teclaIPressionada(int tecla, int x, int y){
         }
 }
 
-void gameloop(int tempo){
-// DELIMITA ATÉ ONDE A TROPA VAI
+
+void movimentoInimigoSegundaFase(){
     if(flag){
         if(inimigo.posX <34){
             inimigo.posX++;        
@@ -359,6 +407,25 @@ void gameloop(int tempo){
             flag = !flag;
         }
     }
+}
+void movimentoInimigoPrimeiraFase(){
+    if(flag){
+        if(inimigo_primeira_fase.posX < 100)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX ++;
+        else
+            flag=!flag;
+    }else{
+        if(inimigo_primeira_fase.posX > 3)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX --;
+        else
+            flag=!flag;
+    }
+
+}
+
+void gameloop(int tempo){
+// DELIMITA ATÉ ONDE A TROPA VAI
+    contadorFases();
+    if(fase==1)movimentoInimigoPrimeiraFase();
+    else if(fase==2)movimentoInimigoSegundaFase();
 // "BORDA" DA TELA
     
     if(!pause){      
@@ -390,6 +457,12 @@ void defineAtributos(){
     kunai.altura = 4;
     kunai.atirar = false;
 
+    inimigo_primeira_fase.posX=50;
+    inimigo_primeira_fase.posY = 80;
+    inimigo_primeira_fase.largura = 10;
+    inimigo_primeira_fase.altura = 10;
+    inimigo_primeira_fase.vivo = true;
+
     shuriken.largura = 4;
     shuriken.altura = 4;
     shuriken.atirar = false;
@@ -406,7 +479,7 @@ void setup(){
     glClearColor(0,0,0,0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    defineTexturas();
+    defineTexturas(1);
     defineAtributos();
 }
 
