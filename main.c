@@ -13,6 +13,7 @@ void contador();
 void gameloop(int tempo);
 void reiniciar();
 void setup();
+bool verificaFimDeFase();
 
 Jogador personagem_principal;
 Personagens inimigo;
@@ -240,12 +241,29 @@ void desenhaMinhaCena(){
             shuriken.atirar = false;  
         }
     }
-    if(pause){ 
-        desenhaPause(); 
-    }
+
+    if(pause)desenhaPause();
+         
+    //if(verificaFimDeFase())     
     
     glutSwapBuffers();   
    
+}
+
+bool verificaFimDeFase(){
+    int contador_de_inimigos_mortos=0;
+    for(int i=0;i<3;i++){
+        for(int j=0;j<10;j++){
+            if(matriz_inimigos[i][j].vivo==false){
+                contador_de_inimigos_mortos++;            
+            }
+        }    
+    }
+    if(contador_de_inimigos_mortos==30){
+        return true; // acabou    
+    }else{
+        return false;//false    
+    }
 }
 
 void redimensionada(int width, int height){
