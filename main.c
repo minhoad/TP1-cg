@@ -151,6 +151,7 @@ void desenhaProjetil(int x){
 
             glTexCoord2f(0,1);
             glVertex2f(-shuriken.largura/2, shuriken.altura/2);
+        
     }
     else if(x==2){
         glBindTexture(GL_TEXTURE_2D, id_textura_projetil_inimigo);
@@ -211,7 +212,17 @@ bool colisao(int posX_projetil,
                 return true;        
             }        
         }    
+      
     }
+    /*MELHORAR COLISÃO
+    if(posY_projetil+altura_projetil == posY_inimigo){
+        if((posX_projetil+largura_projetil)*altura_projetil>= posX_inimigo*altura_inimigo && posX_projetil+largura_projetil <= posX_inimigo+largura_inimigo){
+            if(vivo){
+                return true;        
+            }        
+        }    
+      
+    }*/
     
     
     return false;
@@ -237,36 +248,34 @@ void desenhaMinhaCena(){
                            inimigo_primeira_fase.vivo = false;                            
                            shuriken.atirar = false;         
                                                           }
-            shuriken.posY+=2;
-            if(shuriken.posY > 99){//QUando sair da tela
-                shuriken.atirar = false;  
-            }
-        }  
-    }
-
-    else if(fase==2){
-        criaMatrizInimigos(); //2°fase
-        if(shuriken.atirar){
-            desenhaProjetil(1);
-            for(int i=0;i<3;i++){
-                for(int j=0;j<10;j++){
-
-                    if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                               shuriken.altura, matriz_inimigos[i][j].posX,
-                               matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
-                               matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
-
-                               matriz_inimigos[i][j].vivo = false;                            
-                               shuriken.atirar = false;         
-                                                              }
-                }
-            }
             shuriken.posY++;
             if(shuriken.posY > 99){//QUando sair da tela
                 shuriken.atirar = false;  
             }
-        }
-    }
+        }  
+    }else if(fase==2){
+            criaMatrizInimigos(); //2°fase
+            if(shuriken.atirar){
+                desenhaProjetil(1);
+                for(int i=0;i<3;i++){
+                    for(int j=0;j<10;j++){
+
+                        if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                   shuriken.altura, matriz_inimigos[i][j].posX,
+                                   matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
+                                   matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
+
+                                   matriz_inimigos[i][j].vivo = false;                            
+                                   shuriken.atirar = false;         
+                                                                  }
+                    }
+                }
+                shuriken.posY++;
+                if(shuriken.posY > 99){//QUando sair da tela
+                    shuriken.atirar = false;  
+                }
+            }
+    }  
     if(pause)desenhaPause();
          
     //if(verificaFimDeFase())     
@@ -277,12 +286,12 @@ void desenhaMinhaCena(){
 void contadorFases(){
     int contador_de_inimigos_mortos=0;   
     if(fase==1){
+        
         if(!inimigo_primeira_fase.vivo){
             fase++;        
         }  
     }
-   
-    if(fase==2){
+    else if(fase==2){
         for(int i=0;i<3;i++){
             for(int j=0;j<10;j++){
                 if(matriz_inimigos[i][j].vivo==false){
@@ -295,23 +304,6 @@ void contadorFases(){
         }   
     }
     contador_de_inimigos_mortos = 0;
-}
-
-
-bool verificaFimDeFase(){
-    int contador_de_inimigos_mortos=0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<10;j++){
-            if(matriz_inimigos[i][j].vivo==false){
-                contador_de_inimigos_mortos++;            
-            }
-        }    
-    }
-    if(contador_de_inimigos_mortos==30){
-        return true; // acabou    
-    }else{
-        return false;//false    
-    }
 }
 
 void redimensionada(int width, int height){
@@ -344,7 +336,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 break;            
             }else{
                 pause = false;
-                glutTimerFunc(1000/33,gameloop,1); 
+                glutTimerFunc(1000/33,gameloop,1);  
                 break;
             }
             break; 
@@ -353,7 +345,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
             if(pause){
                 pause = false;   
                 reiniciar();  
-                glutTimerFunc(1000/33,gameloop,1);            
+                glutTimerFunc(1000/33,gameloop,1);             
             }
             reiniciar();
             break;  
@@ -410,11 +402,11 @@ void movimentoInimigoSegundaFase(){
 }
 void movimentoInimigoPrimeiraFase(){
     if(flag){
-        if(inimigo_primeira_fase.posX < 100)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX ++;
+        if(inimigo_primeira_fase.posX < 97)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX +=2;
         else
             flag=!flag;
     }else{
-        if(inimigo_primeira_fase.posX > 3)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX --;
+        if(inimigo_primeira_fase.posX > 3)inimigo_primeira_fase.posX = inimigo_primeira_fase.posX -=2;
         else
             flag=!flag;
     }
@@ -430,8 +422,8 @@ void gameloop(int tempo){
     
     if(!pause){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
-        glutTimerFunc(1000/33,gameloop,1);// CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
-                
+        glutTimerFunc(1000/33,gameloop,1); // CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
+         
     }else{
         desenhaPause();           
         glutPostRedisplay(); 
@@ -479,7 +471,7 @@ void setup(){
     glClearColor(0,0,0,0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    defineTexturas(1);
+    defineTexturas(fase);
     defineAtributos();
 }
 
