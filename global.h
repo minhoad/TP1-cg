@@ -5,13 +5,14 @@ typedef struct{
     int posY;
     int altura;
     int largura;
-}Personagens;
+}Personagens; // criar personagens inimigos
 
 typedef struct{
     int posX;
     int posY;
     int altura;
     int largura;
+    int qtdvidas;
 }Jogador;
 
 typedef struct{
