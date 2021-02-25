@@ -31,14 +31,14 @@ void defineTexturas(int fase){
                 id_textura_fundo = carregaTextura("cenario.png");
                 id_pause = carregaTextura("pausescreen.png");
                 id_textura_projetil = carregaTextura("shuriken.png");
+                id_textura_projetil_inimigo= carregaTextura("kunai.png");
                 contador_vezes_carrega_textura++;
             }
             break;
         case 2:
             if(contador_vezes_carrega_textura==2){
                 id_textura_fundo = carregaTextura("folha.png");
-                id_textura_inimigo = carregaTextura("zetsu.png");
-                id_textura_projetil_inimigo= carregaTextura("kunai.png");
+                id_textura_inimigo = carregaTextura("zetsu.png");               
                 contador_vezes_carrega_textura++;
             }            
             break;
