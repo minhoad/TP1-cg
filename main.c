@@ -13,7 +13,7 @@ void contador();
 void gameloop(int tempo);
 void reiniciar();
 void setup();
-bool verificaFimDeFase();
+
 
 Jogador personagem_principal;
 Personagens inimigo;
@@ -24,6 +24,7 @@ formacao matriz_inimigos[3][10];
 bool pause = false;
 bool flag = true; // !=0
 int fase=1;
+int descida_fase2 = 0;
 
 
 void desenhaPersonagemPrincipal(){
@@ -185,14 +186,13 @@ void criaMatrizInimigos(){
             matriz_inimigos[i][j].posY = inimigo.posY;
             matriz_inimigos[i][j].altura = inimigo.altura;
             matriz_inimigos[i][j].largura = inimigo.largura;
-            if(matriz_inimigos[i][j].vivo==true)            
-                desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
+            if(matriz_inimigos[i][j].vivo==true)desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
             inimigo.posX+=7;          
         }    
         inimigo.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
         inimigo.posY+=7;
     }
-    inimigo.posY = 80;
+    inimigo.posY = 80-descida_fase2;
     
 }
 
@@ -285,6 +285,7 @@ void desenhaMinhaCena(){
                         
                        personagem_principal.qtdvidas--;
                        kunai.atirar = false;
+                       
                        }
                        kunai.posY--;
                        if(kunai.posY<8){
@@ -317,11 +318,11 @@ void desenhaMinhaCena(){
     }  
     if(pause)desenhaPause();
          
-    //if(verificaFimDeFase())     
     
+
     glutSwapBuffers();   
-   
 }
+
 void contadorFases(){
     int contador_de_inimigos_mortos=0;   
     if(fase==1){
@@ -344,6 +345,7 @@ void contadorFases(){
     }
     contador_de_inimigos_mortos = 0;
 }
+
 
 void redimensionada(int width, int height){
     glViewport(0, 0, width, height);
@@ -394,8 +396,16 @@ void teclaPressionada(unsigned char tecla, int x, int y){
 }
 //REINICIAR O JOGO
 void reiniciar(){
+    fase=1;
     setup();
-    criaMatrizInimigos(); 
+    glutPostRedisplay();
+    id_textura_personagem_principal=0;
+    id_textura_fundo=0;
+    id_textura_inimigo=0;
+    id_textura_projetil=0;
+    id_pause=0;
+    id_textura_projetil_inimigo=0;
+    contador_vezes_carrega_textura=1;
 }
 
 void teclaIPressionada(int tecla, int x, int y){
@@ -426,6 +436,7 @@ void movimentoInimigoSegundaFase(){
             inimigo.posX++;        
         }
         else{
+            descida_fase2+=2;
             flag = !flag;        
                   
         }
@@ -435,7 +446,7 @@ void movimentoInimigoSegundaFase(){
             inimigo.posX--;
         }
         else{
-                       
+            descida_fase2+=2;        
             flag = !flag;
         }
     }
@@ -453,9 +464,10 @@ void movimentoInimigoPrimeiraFase(){
             }
                 inimigo_primeira_fase.posX+=2;
         }
-        else
+        else{
+            inimigo_primeira_fase.posY-=2;
             flag=!flag;
-        
+        }
     }else{
         if(inimigo_primeira_fase.posX > 3){
 
@@ -468,11 +480,41 @@ void movimentoInimigoPrimeiraFase(){
             }
             inimigo_primeira_fase.posX -=2;
         }
-        else
+        else{
+            inimigo_primeira_fase.posY-=2;
             flag=!flag;
+        }    
     }
 
+}/*
+int verificaLinhaMorta(){
+    int contador=0,contador_linhas=0;
+    for(int j=0;1;j++){
+            if(matriz_inimigo[contador_linhas][j].vivo==false){
+                contador++; 
+                return contador_linhas;           
+            }
+            if(contador==10){
+                contador_linhas+=1;    
+                return contador_linhas;    
+            }
+            if(contador_linhas==3){
+                break;        
+            }
+        }
+    return -1;
 }
+
+
+int* projetilrandom_fase2(){
+    int *posXY;
+    srand(time(NULL));
+    posXY = (int*)malloc(2*sizeof(int));
+    posXY[0] = rand()%10;
+    posXY[1] = verificaLinhaMorta();
+    return posXY;
+}
+*/
 
 void gameloop(int tempo){
 // DELIMITA ATÉ ONDE A TROPA VAI
@@ -483,7 +525,7 @@ void gameloop(int tempo){
     
     if(!pause){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
-        glutTimerFunc(1000/33,gameloop,1); // CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
+        glutTimerFunc(1000/33,gameloop,0); // CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
          
     }else{
         desenhaPause();           
@@ -511,6 +553,8 @@ void defineAtributos(){
     kunai.altura = 4;
     kunai.atirar = false;
     kunai.posY = 80;
+    
+    descida_fase2=0;
 
     inimigo_primeira_fase.posX=50;
     inimigo_primeira_fase.posY = 80;
