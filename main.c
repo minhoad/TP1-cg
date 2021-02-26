@@ -29,6 +29,8 @@ int descida_fase2 = 0;
 int maximo_de_tiros_tela_fase2 = 2;
 int contador_de_tiros_tela = 0;
 
+double frame_count = 0,initial_time, final_time, contador_fps=0;
+
 void desenhaPersonagemPrincipal(){
 
     
@@ -188,7 +190,9 @@ void criaMatrizInimigos(){
             matriz_inimigos[i][j].posY = inimigo.posY;
             matriz_inimigos[i][j].altura = inimigo.altura;
             matriz_inimigos[i][j].largura = inimigo.largura;
-            if(matriz_inimigos[i][j].vivo==true)desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
+            if(matriz_inimigos[i][j].vivo==true){
+                desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
+            }
             inimigo.posX+=7;          
         }    
         inimigo.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
@@ -336,7 +340,16 @@ void desenhaMinhaCena(){
             }
     }  
     if(pause)desenhaPause();
-         
+
+    frame_count++;
+	final_time = time(NULL);
+	if (final_time - initial_time > 0){
+		contador_fps = frame_count/(final_time-initial_time);
+		printf("FPS: %f\n", contador_fps);
+		frame_count = 0;
+		initial_time = final_time;
+		
+	}     
     
 
     glutSwapBuffers();   
@@ -454,12 +467,15 @@ void movimentoInimigoSegundaFase(){
     int x,y;
     if(flag){
         if(inimigo.posX <34){
-           
-            if(inimigo.posX%5==0 && kunai.atirar==false){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
-                pAux = projetilrandom_fase2();
+            pAux = projetilrandom_fase2();
                 x=pAux[0];
                 y=pAux[1];
-                free(pAux);                
+                free(pAux); 
+            if(inimigo.posX%5==0 && kunai.atirar==false && pAux[0]!=-1){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
+                //pAux = projetilrandom_fase2();
+                //x=pAux[0];
+                //y=pAux[1];
+                //free(pAux);                
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;        
                 kunai.atirar = true;         
@@ -470,17 +486,21 @@ void movimentoInimigoSegundaFase(){
         else{
             descida_fase2+=1;
             flag = !flag;        
-                  
+                            
         }
     }
     else{
         if(inimigo.posX>3){
-            
-            if(inimigo.posX%5==0 && kunai.atirar==false){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
-                pAux = projetilrandom_fase2();
-                x=pAux[0];
-                y=pAux[1];
-                free(pAux);
+            pAux = projetilrandom_fase2();
+            x=pAux[0];
+            y=pAux[1];
+            free(pAux);           
+        
+            if(inimigo.posX%5==0 && kunai.atirar==false && pAux[0]!=-1){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
+                //pAux = projetilrandom_fase2();
+                //x=pAux[0];
+                //y=pAux[1];
+                //free(pAux);
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;               
                 kunai.atirar = true;         
@@ -492,6 +512,7 @@ void movimentoInimigoSegundaFase(){
         else{
             descida_fase2+=1;        
             flag = !flag;
+            
         }
     }
 }
@@ -544,7 +565,7 @@ bool verificaLinhaMorta(int linha){ // fase 2
     return false;
 }
 bool verificaPosicaoMorta(int x, int y){// aq
-    if(matriz_inimigos[x][y].vivo == false){
+    if(matriz_inimigos[y][x].vivo == false){
         return true; // posição morta
     }
     return false; // posicao ta vida
@@ -565,6 +586,11 @@ int* projetilrandom_fase2(){ // fase 2
             aux = rand()%10;
     }
     posXY[1] = aux;
+    if(verificaLinhaMorta(linha)==true && linha == 2){
+        posXY[0] = -1;         
+        posXY[1] = -1;
+    }
+    printf("x: %d y: %d",posXY[1],posXY[0]);
     return posXY; // dar free nisso sempre
 }
 
