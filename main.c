@@ -14,22 +14,30 @@ void gameloop(int tempo);
 void reiniciar();
 void setup();
 int* projetilrandom_fase2();
+void criaVetorInimigos();
 
 
 Jogador personagem_principal;
-Personagens inimigo;
+
+Auxiliar_de_criacao_de_obj inimigo_aux;
+Auxiliar_de_criacao_de_obj inimigo_aux_fase3;
+
 Arma shuriken; // aliado
 Arma kunai; // inimigo
-formacao inimigo_primeira_fase;
-formacao matriz_inimigos[3][10];
+formacao inimigo_primeira_fase; // PRIMEIRA FASE
+formacao matriz_inimigos[3][10]; // SEGUNDA FASE
+formacao vetor_de_inimigos[5]; // TERCEIRA FASE
 bool pause = false;
-bool flag = true; // !=0
+bool flag = true; // trocar a direção movimento dos inimigos
 int fase=1;
-int descida_fase2 = 0;
-int maximo_de_tiros_tela_fase2 = 2;
-int contador_de_tiros_tela = 0;
+int descida_fase2 = 0; 
+int descida_fase3 = 0;
 
-double frame_count = 0,initial_time, final_time, contador_fps=0;
+//          IMPLEMENTAR
+//int maximo_de_tiros_tela_fase2 = 2;         
+//int contador_de_tiros_tela = 0;       
+
+double frame_count = 0,initial_time, final_time, contador_fps=0; // para o contador de fps
 
 void desenhaPersonagemPrincipal(){
 
@@ -60,6 +68,7 @@ void desenhaPersonagemPrincipal(){
         glDisable(GL_TEXTURE_2D);
         
 }
+
 void desenhaInimigo(int posX,int posY,int largura,int altura){
     glColor3f(1,1,1);
     
@@ -87,6 +96,7 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
         glDisable(GL_TEXTURE_2D);
        
 }
+
 
 void desenhaFundo(){
     
@@ -186,21 +196,36 @@ void criaMatrizInimigos(){
 
     for(int i=0;i<3;i++){
         for(int j=0;j<10;j++){
-            matriz_inimigos[i][j].posX = inimigo.posX;
-            matriz_inimigos[i][j].posY = inimigo.posY;
-            matriz_inimigos[i][j].altura = inimigo.altura;
-            matriz_inimigos[i][j].largura = inimigo.largura;
+            matriz_inimigos[i][j].posX = inimigo_aux.posX;
+            matriz_inimigos[i][j].posY = inimigo_aux.posY;
+            matriz_inimigos[i][j].altura = inimigo_aux.altura;
+            matriz_inimigos[i][j].largura = inimigo_aux.largura;
             if(matriz_inimigos[i][j].vivo==true){
-                desenhaInimigo(inimigo.posX,inimigo.posY,inimigo.largura,inimigo.altura);
+                desenhaInimigo(inimigo_aux.posX,inimigo_aux.posY,inimigo_aux.largura,inimigo_aux.altura);
             }
-            inimigo.posX+=7;          
+            inimigo_aux.posX+=7;          
         }    
-        inimigo.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
-        inimigo.posY+=7;
+        inimigo_aux.posX -= 70;// settando novamente pra posição inicial pra fazer outra fileira
+        inimigo_aux.posY+=7;
     }
-    inimigo.posY = 80-descida_fase2;
+    inimigo_aux.posY = 80-descida_fase2;
     
 }
+
+/*void criaVetorInimigos(){
+    for(int i=0;i<5;i++){
+        vetor_de_inimigos[i].posX = inimigo_aux_fase3.posX;
+        vetor_de_inimigos[i].posY = inimigo_aux_fase3.posY;
+        vetor_de_inimigos[i].altura = inimigo_aux_fase3.altura;
+        vetor_de_inimigos[i].largura = inimigo_aux_fase3.largura;
+        if(vetor_de_inimigos[i].vivo==true){
+            contador_de_inimigos=i;
+            desenhaInimigo(inimigo_aux.posX,inimigo_aux.posY,inimigo_aux.largura,inimigo_aux.altura);
+        }
+        inimigo_aux_fase3.posX+=10;
+    }
+    inimigo_aux_fase3.posY = 80 - descida_fase3;
+}*/
 
 bool colisao(int posX_projetil,
             int posY_projetil,
@@ -336,7 +361,10 @@ void desenhaMinhaCena(){
                        }               
             
             }
-    }  
+    } 
+    /*else if(fase==3){
+        criaVetorInimigos();    
+    } */
     if(pause)desenhaPause();
 
     frame_count++;
@@ -371,9 +399,14 @@ void contadorFases(){
         }
         if(contador_de_inimigos_mortos==30){
             fase++;
-        }   
+        }
+        contador_de_inimigos_mortos = 0;   
     }
-    contador_de_inimigos_mortos = 0;
+    
+    else if(fase == 3){
+            
+    
+    }
 }
 
 
@@ -459,23 +492,44 @@ void teclaIPressionada(int tecla, int x, int y){
         }
 }
 
+/*void movimentoInimigoTerceiraFase(){
+    if(flag){
+        if(inimigo_aux.posX <34){
+            inimigo_aux_fase3.posX++;
+        }
+        else{
+            descida_fase3++;
+            flag = !flag;        
+        }
+    }
+    else{
+        if(inimigo_aux.posX >3){
+            inimigo_aux_fase3.posX--;
+        }
+        else{
+            descida_fase3++;
+            flag = !flag;
+        }    
+    }
+
+}*/
 
 void movimentoInimigoSegundaFase(){
     int *pAux;
     int x,y;
     if(flag){
-        if(inimigo.posX <34){
+        if(inimigo_aux.posX <34){
             pAux = projetilrandom_fase2();
                 x=pAux[0];
                 y=pAux[1];
                 free(pAux); 
-            if(inimigo.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){               
+            if(inimigo_aux.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){               
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;        
                 kunai.atirar = true;         
                 glutPostRedisplay();
             } 
-            inimigo.posX++;
+            inimigo_aux.posX++;
         }
         else{
             descida_fase2+=1;
@@ -484,20 +538,20 @@ void movimentoInimigoSegundaFase(){
         }
     }
     else{
-        if(inimigo.posX>3){
+        if(inimigo_aux.posX>3){
             pAux = projetilrandom_fase2();
             x=pAux[0];
             y=pAux[1];
             free(pAux);           
         
-            if(inimigo.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
+            if(inimigo_aux.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;               
                 kunai.atirar = true;         
                 glutPostRedisplay();
               
             }   
-            inimigo.posX--;
+            inimigo_aux.posX--;
         }
         else{
             descida_fase2+=1;        
@@ -558,10 +612,10 @@ int* projetilrandom_fase2(){ // fase 2
   
     srand(time(NULL));    
     aux = rand()%10;
-    linha = rand()%10;  
+    linha = rand()%3;  
     while(verificaPosicaoMorta(aux,linha)){
             aux = rand()%10;
-            linha = rand()%10;
+            linha = rand()%3;
     }
     posXY[0] = linha;
     posXY[1] = aux;
@@ -573,6 +627,7 @@ void gameloop(int tempo){
     contadorFases();
     if(fase==1)movimentoInimigoPrimeiraFase();
     else if(fase==2)movimentoInimigoSegundaFase();
+    //else if(fase==3)movimentoInimigoTerceiraFase();
     
     if(!pause){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
@@ -595,17 +650,20 @@ void defineAtributos(){
     personagem_principal.altura = 8;
     personagem_principal.qtdvidas = 3;
 
-    inimigo.posX = 7;
-    inimigo.posY = 80;
-    inimigo.largura = 7;
-    inimigo.altura = 7;
+    inimigo_aux.posX = 7;
+    inimigo_aux.posY = 80;
+    inimigo_aux.largura = 7;
+    inimigo_aux.altura = 7;
+
+     
+    inimigo_aux_fase3.posX = 10;
+    inimigo_aux_fase3.posY = 80;
+    inimigo_aux_fase3.largura = 7;
+    inimigo_aux_fase3.altura = 7;
     
     kunai.largura = 4;
     kunai.altura = 4;
     kunai.atirar = false;
-    kunai.posY = 80;
-    
-    descida_fase2=0;
 
     inimigo_primeira_fase.posX=50;
     inimigo_primeira_fase.posY = 80;
@@ -622,6 +680,8 @@ void defineAtributos(){
             matriz_inimigos[i][j].vivo = true;        
         }    
     }
+
+    for(int i=0;i<5;i++)vetor_de_inimigos[i].vivo = true;
 }
 
 
