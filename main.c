@@ -246,9 +246,7 @@ bool colisao_no_player(int posX_projetil,
 
     if(posY_projetil-altura_projetil == posY_inimigo){//+altura_inimigo/2){
         if(posX_projetil+largura_projetil/2 >= posX_inimigo && posX_projetil+largura_projetil/2 <= posX_inimigo+largura_inimigo){
-            //if(qtdvidas>0){
-                return true;        
-           // }        
+                return true;            
         }    
       
     }
@@ -471,11 +469,7 @@ void movimentoInimigoSegundaFase(){
                 x=pAux[0];
                 y=pAux[1];
                 free(pAux); 
-            if(inimigo.posX%5==0 && kunai.atirar==false && pAux[0]!=-1){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
-                //pAux = projetilrandom_fase2();
-                //x=pAux[0];
-                //y=pAux[1];
-                //free(pAux);                
+            if(inimigo.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){               
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;        
                 kunai.atirar = true;         
@@ -496,11 +490,7 @@ void movimentoInimigoSegundaFase(){
             y=pAux[1];
             free(pAux);           
         
-            if(inimigo.posX%5==0 && kunai.atirar==false && pAux[0]!=-1){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
-                //pAux = projetilrandom_fase2();
-                //x=pAux[0];
-                //y=pAux[1];
-                //free(pAux);
+            if(inimigo.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;               
                 kunai.atirar = true;         
@@ -552,23 +542,12 @@ void movimentoInimigoPrimeiraFase(){
     }
 
 }
-bool verificaLinhaMorta(int linha){ // fase 2
-    int contador=0;
-    for(int j=0;j<10;j++){
-            if(matriz_inimigos[linha][j].vivo==false){
-                contador++;            
-            }
-            if(contador==9){
-                 return true;   
-            }
-    }
-    return false;
-}
+
 bool verificaPosicaoMorta(int x, int y){// aq
     if(matriz_inimigos[y][x].vivo == false){
         return true; // posição morta
     }
-    return false; // posicao ta vida
+    return false; // posicao ta viva
 }
 
 int* projetilrandom_fase2(){ // fase 2
@@ -576,31 +555,24 @@ int* projetilrandom_fase2(){ // fase 2
     posXY = (int*)malloc(2*sizeof(int));    
     posXY[0] = 0;
     posXY[1] = 0;
-    if(verificaLinhaMorta(linha) && linha < 3){ // colocar condição de fim de fase tb 
-        linha++;
-    }
-    posXY[0] = linha; 
+  
     srand(time(NULL));    
     aux = rand()%10;
+    linha = rand()%10;  
     while(verificaPosicaoMorta(aux,linha)){
             aux = rand()%10;
+            linha = rand()%10;
     }
+    posXY[0] = linha;
     posXY[1] = aux;
-    if(verificaLinhaMorta(linha)==true && linha == 2){
-        posXY[0] = -1;         
-        posXY[1] = -1;
-    }
-    printf("x: %d y: %d",posXY[1],posXY[0]);
     return posXY; // dar free nisso sempre
 }
 
 
 void gameloop(int tempo){
-// DELIMITA ATÉ ONDE A TROPA VAI
     contadorFases();
     if(fase==1)movimentoInimigoPrimeiraFase();
     else if(fase==2)movimentoInimigoSegundaFase();
-// "BORDA" DA TELA
     
     if(!pause){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
