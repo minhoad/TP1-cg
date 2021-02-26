@@ -434,13 +434,13 @@ void teclaIPressionada(int tecla, int x, int y){
                 personagem_principal.posX++;        
             }
             
-            glutPostRedisplay();
+            //glutPostRedisplay();
             break;
         case GLUT_KEY_LEFT: // Seta para a esquerda <-
             if(personagem_principal.posX > 10){
                 personagem_principal.posX--;        
             }
-            glutPostRedisplay();
+            //glutPostRedisplay();
             break;
         
         default:
@@ -464,7 +464,7 @@ void movimentoInimigoSegundaFase(){
                 kunai.posY = matriz_inimigos[x][y].posY;        
                 kunai.atirar = true;         
                 glutPostRedisplay();
-            }   
+            } 
             inimigo.posX++;
         }
         else{
@@ -475,6 +475,7 @@ void movimentoInimigoSegundaFase(){
     }
     else{
         if(inimigo.posX>3){
+            
             if(inimigo.posX%5==0 && kunai.atirar==false){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
                 pAux = projetilrandom_fase2();
                 x=pAux[0];
@@ -542,7 +543,7 @@ bool verificaLinhaMorta(int linha){ // fase 2
     }
     return false;
 }
-bool verificaPosicaoMorta(int x, int y){
+bool verificaPosicaoMorta(int x, int y){// aq
     if(matriz_inimigos[x][y].vivo == false){
         return true; // posição morta
     }
@@ -552,16 +553,18 @@ bool verificaPosicaoMorta(int x, int y){
 int* projetilrandom_fase2(){ // fase 2
     int *posXY,linha=0,aux;
     posXY = (int*)malloc(2*sizeof(int));    
+    posXY[0] = 0;
+    posXY[1] = 0;
     if(verificaLinhaMorta(linha) && linha < 3){ // colocar condição de fim de fase tb 
         linha++;
     }
-    posXY[1] = linha; 
+    posXY[0] = linha; 
     srand(time(NULL));    
     aux = rand()%10;
     while(verificaPosicaoMorta(aux,linha)){
             aux = rand()%10;
     }
-    posXY[0] = aux;
+    posXY[1] = aux;
     return posXY; // dar free nisso sempre
 }
 
