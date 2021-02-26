@@ -5,7 +5,7 @@ typedef struct{
     int posY;
     int altura;
     int largura;
-}Personagens; // criar personagens inimigos
+}Auxiliar_de_criacao_de_obj; // criar personagens inimigos TROCAR DEPOIS PARA OBJETOS
 
 typedef struct{
     int posX;
