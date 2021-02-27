@@ -24,14 +24,19 @@ Auxiliar_de_criacao_de_obj inimigo_aux_fase3;
 
 Arma shuriken; // aliado
 Arma kunai; // inimigo
+
 formacao inimigo_primeira_fase; // PRIMEIRA FASE
 formacao matriz_inimigos[3][10]; // SEGUNDA FASE
 formacao vetor_de_inimigos[5]; // TERCEIRA FASE
+
 bool pause = false;
+
+
 bool flag = true; // trocar a direção movimento dos inimigos
 int fase=1;
+
 int descida_fase2 = 0; 
-int descida_fase3 = 0;
+//int descida_fase3 = 0;
 
 //          IMPLEMENTAR
 //int maximo_de_tiros_tela_fase2 = 2;         
@@ -73,7 +78,29 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
     glColor3f(1,1,1);
     
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    if(fase == 1 || fase == 2 || fase == 4)glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    
+    else if(fase == 3){
+    	switch(contador_de_texturas_inimigos){
+    		case 0:
+    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo0);
+			break;
+		case 1:
+			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo1);
+			break;
+		case 2:
+    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo2);
+			break;
+		case 3:
+			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo3);
+			break;
+		case 4:
+			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo4);
+			break;
+		default:
+			break;
+    	}
+    }
     glPushMatrix();
     
     glTranslatef(posX, posY, 0);
@@ -212,20 +239,20 @@ void criaMatrizInimigos(){
     
 }
 
-/*void criaVetorInimigos(){
+void criaVetorInimigos(){
     for(int i=0;i<5;i++){
         vetor_de_inimigos[i].posX = inimigo_aux_fase3.posX;
         vetor_de_inimigos[i].posY = inimigo_aux_fase3.posY;
         vetor_de_inimigos[i].altura = inimigo_aux_fase3.altura;
         vetor_de_inimigos[i].largura = inimigo_aux_fase3.largura;
         if(vetor_de_inimigos[i].vivo==true){
-            contador_de_inimigos=i;
-            desenhaInimigo(inimigo_aux.posX,inimigo_aux.posY,inimigo_aux.largura,inimigo_aux.altura);
+            contador_de_texturas_inimigos=i;
+            desenhaInimigo(inimigo_aux_fase3.posX,inimigo_aux_fase3.posY,inimigo_aux_fase3.largura,inimigo_aux_fase3.altura);
         }
         inimigo_aux_fase3.posX+=10;
     }
-    inimigo_aux_fase3.posY = 80 - descida_fase3;
-}*/
+    inimigo_aux_fase3.posX-=50;
+}
 
 bool colisao(int posX_projetil,
             int posY_projetil,
@@ -362,9 +389,11 @@ void desenhaMinhaCena(){
             
             }
     } 
-    /*else if(fase==3){
+    else if(fase==3){
         criaVetorInimigos();    
-    } */
+    } 
+    
+    
     if(pause)desenhaPause();
 
     frame_count++;
@@ -397,16 +426,17 @@ void contadorFases(){
                 }
             }    
         }
+        contador_de_inimigos_mortos=30;
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
         contador_de_inimigos_mortos = 0;   
     }
     
-    else if(fase == 3){
+    //else if(fase == 3){
             
     
-    }
+    //}
 }
 
 
@@ -477,42 +507,36 @@ void teclaIPressionada(int tecla, int x, int y){
             if(personagem_principal.posX < 90){
                 personagem_principal.posX++;        
             }
-            
-            //glutPostRedisplay();
             break;
         case GLUT_KEY_LEFT: // Seta para a esquerda <-
             if(personagem_principal.posX > 10){
                 personagem_principal.posX--;        
             }
-            //glutPostRedisplay();
             break;
-        
         default:
             break;
         }
 }
 
-/*void movimentoInimigoTerceiraFase(){
+void movimentoInimigoTerceiraFase(){
     if(flag){
-        if(inimigo_aux.posX <34){
+        if(inimigo_aux_fase3.posX < 57){
             inimigo_aux_fase3.posX++;
         }
         else{
-            descida_fase3++;
             flag = !flag;        
         }
     }
     else{
-        if(inimigo_aux.posX >3){
+        if(inimigo_aux_fase3.posX > 3){
             inimigo_aux_fase3.posX--;
         }
         else{
-            descida_fase3++;
             flag = !flag;
         }    
     }
 
-}*/
+}
 
 void movimentoInimigoSegundaFase(){
     int *pAux;
@@ -627,7 +651,7 @@ void gameloop(int tempo){
     contadorFases();
     if(fase==1)movimentoInimigoPrimeiraFase();
     else if(fase==2)movimentoInimigoSegundaFase();
-    //else if(fase==3)movimentoInimigoTerceiraFase();
+    else if(fase==3)movimentoInimigoTerceiraFase();
     
     if(!pause){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
@@ -656,7 +680,7 @@ void defineAtributos(){
     inimigo_aux.altura = 7;
 
      
-    inimigo_aux_fase3.posX = 10;
+    inimigo_aux_fase3.posX = 30; 
     inimigo_aux_fase3.posY = 80;
     inimigo_aux_fase3.largura = 7;
     inimigo_aux_fase3.altura = 7;
