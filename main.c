@@ -322,8 +322,11 @@ void desenhaMinhaCena(){
                            shuriken.altura, inimigo_primeira_fase.posX,
                            inimigo_primeira_fase.posY, inimigo_primeira_fase.altura,
                            inimigo_primeira_fase.largura,inimigo_primeira_fase.vivo)){
-
-                           inimigo_primeira_fase.vivo = false;                            
+			
+			inimigo_primeira_fase.qtdvidas--;
+			if(inimigo_primeira_fase.qtdvidas==0){
+                           inimigo_primeira_fase.vivo = false;
+                       }                            
                            shuriken.atirar = false;         
                                                           }
             shuriken.posY++;
@@ -426,7 +429,7 @@ void contadorFases(){
                 }
             }    
         }
-        contador_de_inimigos_mortos=30;
+        //contador_de_inimigos_mortos=30; PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
@@ -665,6 +668,20 @@ void gameloop(int tempo){
   
 }
 
+int relogio(int tempo, int tempo_limite, bool crescente){
+	if(crescente){
+		tempo++;
+		if(tempo>tempo_limite){
+			tempo = 0;
+		}
+	}else{
+		tempo--;
+		if(tempo<0){
+			tempo = tempo_limite;
+		}
+	}
+	return tempo;
+}
 
 
 void defineAtributos(){
@@ -694,6 +711,7 @@ void defineAtributos(){
     inimigo_primeira_fase.largura = 10;
     inimigo_primeira_fase.altura = 10;
     inimigo_primeira_fase.vivo = true;
+    inimigo_primeira_fase.qtdvidas = 1;
 
     shuriken.largura = 4;
     shuriken.altura = 4;
