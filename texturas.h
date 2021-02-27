@@ -1,16 +1,17 @@
 GLuint id_textura_personagem_principal=0;
 GLuint id_textura_fundo=0;
 GLuint id_textura_inimigo=0;
-GLuint id_textura_inimigo0=0;
-GLuint id_textura_inimigo1=0;
-GLuint id_textura_inimigo2=0;
-GLuint id_textura_inimigo3=0;
-GLuint id_textura_inimigo4=0;
-GLuint id_textura_projetil=0;
+GLuint id_textura_inimigo0=0; // INIMIGOS
+GLuint id_textura_inimigo1=0; //
+GLuint id_textura_inimigo2=0; //        DA 
+GLuint id_textura_inimigo3=0; // 
+GLuint id_textura_inimigo4=0; // 		FASE 3
+GLuint id_textura_projetil=0; 
 GLuint id_pause=0;
 GLuint id_textura_projetil_inimigo=0;
 int contador_vezes_carrega_textura=1;
 int contador_de_inimigos;
+int contador_de_texturas_inimigos =0;
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -50,8 +51,14 @@ void defineTexturas(int fase){
             break;
         case 3:
             if(contador_vezes_carrega_textura==3){
-                id_textura_fundo = carregaTextura("fundo3.png");   
-                 
+            	 //id_textura_inimigo =0;
+                id_textura_fundo = carregaTextura("fundo3.png"); 
+              	 id_textura_inimigo0 = carregaTextura("deidara.png");  
+              	 id_textura_inimigo1 = carregaTextura("sasore.png"); 
+              	 id_textura_inimigo2 = carregaTextura("pain.png"); 
+              	 id_textura_inimigo3 = carregaTextura("konan.png"); 
+              	 id_textura_inimigo4 = carregaTextura("hidan.png"); 
+                 contador_vezes_carrega_textura++;
             }
             break;
         default:
