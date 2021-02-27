@@ -32,6 +32,7 @@ typedef struct{
     int largura;
     int altura;
     bool vivo;
+    int qtdvidas; 
 }formacao;
 
 int cont=0;
