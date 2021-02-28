@@ -25,9 +25,15 @@ Auxiliar_de_criacao_de_obj inimigo_aux_fase3;
 Arma shuriken; // aliado
 Arma kunai; // inimigo
 
+int contador_de_tiros;
+int maximo_de_tiros_na_tela_fase3 = 2;
+
 formacao inimigo_primeira_fase; // PRIMEIRA FASE
 formacao matriz_inimigos[3][10]; // SEGUNDA FASE
 formacao vetor_de_inimigos[5]; // TERCEIRA FASE
+
+animacao kakashi;
+animacao zetsu;
 
 bool pause = false;
 
@@ -35,7 +41,7 @@ bool pause = false;
 bool flag = true; // trocar a direção movimento dos inimigos
 int fase=1;
 
-int descida_fase2 = 0; 
+int descida_fase2; 
 //int descida_fase3 = 0;
 
 //          IMPLEMENTAR
@@ -78,7 +84,149 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
     glColor3f(1,1,1);
     
     glEnable(GL_TEXTURE_2D);
-    if(fase == 1 || fase == 2 || fase == 4)glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    if(fase==1){
+        if(kakashi.frameAtual >= kakashi.contadorDeFrame && kakashi.frameAtual != kakashi.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+            //printf("okok\n");
+            kakashi.vert1_x = 0.0 + kakashi.somador * kakashi.contadorDeFrame;
+            kakashi.vert2_x = 1/kakashi.qtdTotalFrame + kakashi.somador * kakashi.contadorDeFrame;
+            kakashi.vert3_x = 1/kakashi.qtdTotalFrame + kakashi.somador* kakashi.contadorDeFrame;
+            kakashi.vert4_x = 0.0 + kakashi.somador * kakashi.contadorDeFrame;
+
+            kakashi.vert1_y = 0.0;
+            kakashi.vert2_y = 0.0;
+            kakashi.vert3_y = 1.0;
+            kakashi.vert4_y = 1.0;  
+
+            kakashi.somador = 1/kakashi.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+            kakashi.contadorDeFrame++;  
+        }
+
+        if(kakashi.frameAtual > kakashi.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
+            //printf("ok\n");
+            kakashi.frameAtual = 0;
+            kakashi.contadorDeFrame =  0;
+            kakashi.vert1_x = 0.0;
+            kakashi.vert2_x = 1/kakashi.qtdTotalFrame;
+            kakashi.vert3_x = 1/kakashi.qtdTotalFrame;
+            kakashi.vert4_x = 0.0;
+            kakashi.somador = 1/kakashi.qtdTotalFrame;
+         }
+
+        kakashi.frameAtual = kakashi.frameAtual + kakashi.velocidadeDoFrame;   
+
+        glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    
+        glPushMatrix();
+
+        glTranslatef(posX, posY, 0);
+    
+        glBegin(GL_TRIANGLE_FAN);
+                            
+            glTexCoord2f(kakashi.vert1_x, kakashi.vert1_y); //
+            glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+            glTexCoord2f(kakashi.vert2_x, kakashi.vert2_y); //
+            glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+     
+            glTexCoord2f(kakashi.vert3_x, kakashi.vert3_y); //
+            glVertex3f( largura/2,  altura/2,0); // |     | // 15 , 20
+
+            glTexCoord2f(kakashi.vert4_x, kakashi.vert4_y); //
+            glVertex3f(-largura/2,  altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();
+    }
+    else if(fase==2){
+        if(flag){
+            if(zetsu.frameAtual >= zetsu.contadorDeFrame && zetsu.frameAtual != zetsu.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                //printf("okok\n");
+                zetsu.vert1_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
+                zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
+                zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador* zetsu.contadorDeFrame;
+                zetsu.vert4_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
+
+                zetsu.vert1_y = 0.0;
+                zetsu.vert2_y = 0.0;
+                zetsu.vert3_y = 1.0;
+                zetsu.vert4_y = 1.0;  
+
+                zetsu.somador = 1/zetsu.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                zetsu.contadorDeFrame++;  
+            }
+    
+            if(zetsu.frameAtual > zetsu.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                //printf("ok\n");
+                zetsu.frameAtual = 0;
+                zetsu.contadorDeFrame =  0;
+                zetsu.vert1_x = 0.0;
+                zetsu.vert2_x = 1/zetsu.qtdTotalFrame;
+                zetsu.vert3_x = 1/zetsu.qtdTotalFrame;
+                zetsu.vert4_x = 0.0;
+                zetsu.somador = 1/zetsu.qtdTotalFrame;
+             }
+    }
+    if(!flag){
+            if(zetsu.frameAtual >= zetsu.contadorDeFrame && zetsu.frameAtual != zetsu.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                //printf("okok\n");
+                zetsu.vert1_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
+                zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
+                zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador* zetsu.contadorDeFrame;
+                zetsu.vert4_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
+
+                zetsu.vert1_y = 0.0;
+                zetsu.vert2_y = 0.0;
+                zetsu.vert3_y = 1.0;
+                zetsu.vert4_y = 1.0;  
+
+                zetsu.somador = 1/zetsu.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                zetsu.contadorDeFrame++;  
+            }
+    
+            if(zetsu.frameAtual > zetsu.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                //printf("ok\n");
+                zetsu.frameAtual = zetsu.qtdTotalFrame/2;
+                zetsu.contadorDeFrame =  zetsu.qtdTotalFrame/2;
+                zetsu.somador = 1/zetsu.qtdTotalFrame;
+                zetsu.vert1_x = zetsu.somador *zetsu.contadorDeFrame;
+                zetsu.vert2_x = 1/zetsu.qtdTotalFrame;
+                zetsu.vert3_x = 1/zetsu.qtdTotalFrame;
+                zetsu.vert4_x = zetsu.somador *zetsu.contadorDeFrame;
+                
+             }
+    }
+
+
+        zetsu.frameAtual = zetsu.frameAtual + zetsu.velocidadeDoFrame;    
+
+        glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+    
+        glPushMatrix();
+
+        glTranslatef(posX, posY, 0);
+    
+        glBegin(GL_TRIANGLE_FAN);
+                            
+            glTexCoord2f(zetsu.vert1_x, zetsu.vert1_y); //
+            glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+            glTexCoord2f(zetsu.vert2_x, zetsu.vert2_y); //
+            glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+     
+            glTexCoord2f(zetsu.vert3_x, zetsu.vert3_y); //
+            glVertex3f( largura/2,  altura/2,0); // |     | // 15 , 20
+
+            glTexCoord2f(zetsu.vert4_x, zetsu.vert4_y); //
+            glVertex3f(-largura/2,  altura/2,0); // v1---v2 // -15, 20
+
+        glEnd();
+    
+        glPopMatrix();
+
+
+    }else{
+    if(fase == 4)glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
     
     else if(fase == 3){
     	switch(contador_de_texturas_inimigos){
@@ -122,7 +270,7 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
        
-}
+}}
 
 
 void desenhaFundo(){
@@ -364,9 +512,12 @@ void desenhaMinhaCena(){
                                    matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
                                    matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
 
-                                   matriz_inimigos[i][j].vivo = false;                            
+                                    matriz_inimigos[i][j].qtdvidas--;
+			                        if(matriz_inimigos[i][j].qtdvidas==0){
+                                            matriz_inimigos[i][j].vivo = false;
+                                    }                                                                                       
                                    shuriken.atirar = false;         
-                                                                  }
+                        }
                     }
                 }
                 shuriken.posY++;
@@ -393,7 +544,45 @@ void desenhaMinhaCena(){
             }
     } 
     else if(fase==3){
-        criaVetorInimigos();    
+        criaVetorInimigos();
+        if(shuriken.atirar){
+                desenhaProjetil(1);
+                for(int i=0;i<5;i++){
+                       if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                   shuriken.altura, vetor_de_inimigos[i].posX,
+                                   vetor_de_inimigos[i].posY, vetor_de_inimigos[i].altura,
+                                   vetor_de_inimigos[i].largura,vetor_de_inimigos[i].vivo)){
+
+                                    vetor_de_inimigos[i].qtdvidas--;
+			                        if(vetor_de_inimigos[i].qtdvidas==0){
+                                            vetor_de_inimigos[i].vivo = false;
+                                    }                                                                                       
+                                   shuriken.atirar = false;         
+                        }
+                    
+                }
+                shuriken.posY++;
+                if(shuriken.posY > 99){//QUando sair da tela
+                    shuriken.atirar = false;  
+                }
+            }
+        if(kunai.atirar){
+                desenhaProjetil(2);
+                if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
+                       personagem_principal.posX, personagem_principal.posY,
+                       personagem_principal.altura, personagem_principal.largura,
+                       personagem_principal.qtdvidas)){
+                        
+                       personagem_principal.qtdvidas--;
+                       kunai.atirar = false;
+                       
+                       }
+                       kunai.posY--;
+                       if(kunai.posY<0){
+                           kunai.atirar=false;
+                       }               
+            
+            }    
     } 
     
     
@@ -429,7 +618,7 @@ void contadorFases(){
                 }
             }    
         }
-        //contador_de_inimigos_mortos=30; PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+        contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
@@ -494,7 +683,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
 void reiniciar(){
     fase=1;
     setup();
-    glutPostRedisplay();
+    //glutPostRedisplay();
     id_textura_personagem_principal=0;
     id_textura_fundo=0;
     id_textura_inimigo=0;
@@ -502,6 +691,7 @@ void reiniciar(){
     id_pause=0;
     id_textura_projetil_inimigo=0;
     contador_vezes_carrega_textura=1;
+    glutPostRedisplay();
 }
 
 void teclaIPressionada(int tecla, int x, int y){
@@ -520,10 +710,34 @@ void teclaIPressionada(int tecla, int x, int y){
             break;
         }
 }
+ // Funções para escolher posição random da fase 3 para atirar
+bool verificaPosicaoMortaFase3(int x){
+    if(vetor_de_inimigos[x].vivo == false){
+        return true; // Posição morta    
+    }
+    return false; // posição viva
+}
+int projetilrandom_fase3(){
+    int aux;
+    srand(time(NULL));    
+    aux = rand()%5;  
+    while(verificaPosicaoMortaFase3(aux)){
+            aux = rand()%5;    
+    }
+    return aux;
+}
 
 void movimentoInimigoTerceiraFase(){
+    int aux;
     if(flag){
         if(inimigo_aux_fase3.posX < 57){
+            aux = projetilrandom_fase3();
+            if(contador_de_tiros<=maximo_de_tiros_na_tela_fase3){
+                kunai.posX = vetor_de_inimigos[aux].posX;
+                kunai.posY = vetor_de_inimigos[aux].posY;       
+                kunai.atirar = true;         
+                glutPostRedisplay();
+            }
             inimigo_aux_fase3.posX++;
         }
         else{
@@ -532,6 +746,13 @@ void movimentoInimigoTerceiraFase(){
     }
     else{
         if(inimigo_aux_fase3.posX > 3){
+            aux = projetilrandom_fase3();
+            if(contador_de_tiros<=maximo_de_tiros_na_tela_fase3 ){
+                kunai.posX = vetor_de_inimigos[aux].posX;
+                kunai.posY = vetor_de_inimigos[aux].posY;       
+                kunai.atirar = true;         
+                glutPostRedisplay();
+            }
             inimigo_aux_fase3.posX--;
         }
         else{
@@ -624,7 +845,7 @@ void movimentoInimigoPrimeiraFase(){
 
 }
 
-bool verificaPosicaoMorta(int x, int y){// aq
+bool verificaPosicaoMortaFase2(int x, int y){// aq
     if(matriz_inimigos[y][x].vivo == false){
         return true; // posição morta
     }
@@ -640,7 +861,7 @@ int* projetilrandom_fase2(){ // fase 2
     srand(time(NULL));    
     aux = rand()%10;
     linha = rand()%3;  
-    while(verificaPosicaoMorta(aux,linha)){
+    while(verificaPosicaoMortaFase2(aux,linha)){
             aux = rand()%10;
             linha = rand()%3;
     }
@@ -685,6 +906,8 @@ int relogio(int tempo, int tempo_limite, bool crescente){
 
 
 void defineAtributos(){
+    contador_de_tiros=0;
+
     personagem_principal.posX = 50;
     personagem_principal.posY = 10;
     personagem_principal.largura = 8;
@@ -695,6 +918,7 @@ void defineAtributos(){
     inimigo_aux.posY = 80;
     inimigo_aux.largura = 7;
     inimigo_aux.altura = 7;
+    descida_fase2=0;
 
      
     inimigo_aux_fase3.posX = 30; 
@@ -719,11 +943,26 @@ void defineAtributos(){
 
     for(int i=0;i<3;i++){
         for(int j = 0;j<10;j++){
-            matriz_inimigos[i][j].vivo = true;        
+            matriz_inimigos[i][j].vivo = true;   
+            matriz_inimigos[i][j].qtdvidas=1;     
         }    
     }
 
-    for(int i=0;i<5;i++)vetor_de_inimigos[i].vivo = true;
+    for(int i=0;i<5;i++){
+        vetor_de_inimigos[i].vivo = true;
+        vetor_de_inimigos[i].qtdvidas=2;
+    }
+    kakashi.frameAtual = 0;
+    kakashi.somador = 0;
+    kakashi.contadorDeFrame = 0;
+    kakashi.qtdTotalFrame=2;
+    kakashi.velocidadeDoFrame = 0.1;
+
+    zetsu.frameAtual = 0;
+    zetsu.somador = 0;
+    zetsu.contadorDeFrame = 0;
+    zetsu.qtdTotalFrame=6;
+    zetsu.velocidadeDoFrame = 0.2;
 }
 
 
