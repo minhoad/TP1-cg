@@ -35,6 +35,7 @@ formacao vetor_de_inimigos[5]; // TERCEIRA FASE
 
 animacao kakashi;
 animacao zetsu;
+animacao naruto;
 
 bool pause = false;
 
@@ -52,33 +53,147 @@ int descida_fase2;
 double frame_count = 0,initial_time, final_time, contador_fps=0; // para o contador de fps
 
 void desenhaPersonagemPrincipal(){
-
-    
-    glColor3f(1,1,1);
-    
     glEnable(GL_TEXTURE_2D);
+    if(estado == 0){//naruto parado.
+        if(naruto.frameAtual == 0){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                //printf("ok\n");
+                naruto.vert1_x = 0.0;
+                naruto.vert2_x = 1/naruto.qtdTotalFrame;
+                naruto.vert3_x = 1/naruto.qtdTotalFrame;
+                naruto.vert4_x = 0.0;
+
+                naruto.vert1_y = 0.0;
+                naruto.vert2_y = 0.0;
+                naruto.vert3_y = 1.0;
+                naruto.vert4_y = 1.0;
+                 
+        }
+    
+    
+    }
+    if(estado == 1){//naruto andando direita
+
+        naruto.velocidadeDoFrame = 0.5;
+        naruto.somador = 1/naruto.qtdTotalFrame;
+
+        if(naruto.frameAtual >= naruto.contadorDeFrame && naruto.frameAtual != naruto.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        naruto.vert1_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame + naruto.somador* naruto.contadorDeFrame;
+                        naruto.vert4_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+
+                        naruto.vert1_y = 0.0;
+                        naruto.vert2_y = 0.0;
+                        naruto.vert3_y = 1.0;
+                        naruto.vert4_y = 1.0;  
+
+                        naruto.contadorDeFrame++;  
+         }
+            
+                    if(naruto.frameAtual > naruto.qtdTotalFrame-12){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        naruto.frameAtual = 0;
+                        naruto.contadorDeFrame =  0;
+                        naruto.vert1_x = 0.0;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert4_x = 0.0;
+                        estado = 0;
+                        
+                     }
+                naruto.frameAtual = naruto.frameAtual + naruto.velocidadeDoFrame;
+    }
+    if(estado == 2){//naruto andando esquerda
+
+        naruto.velocidadeDoFrame = 0.5;
+        naruto.somador = 1/naruto.qtdTotalFrame;
+
+        if(naruto.frameAtual >= naruto.contadorDeFrame && naruto.frameAtual != naruto.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        naruto.vert1_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame + naruto.somador* naruto.contadorDeFrame;
+                        naruto.vert4_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+
+                        naruto.vert1_y = 0.0;
+                        naruto.vert2_y = 0.0;
+                        naruto.vert3_y = 1.0;
+                        naruto.vert4_y = 1.0;  
+
+                        naruto.contadorDeFrame++;  
+         }
+            
+                    if(naruto.frameAtual > naruto.qtdTotalFrame-4){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        naruto.frameAtual = 0;
+                        naruto.contadorDeFrame =  0;
+                        naruto.vert1_x = 0.0;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert4_x = 0.0;
+                        estado = 0;
+                        
+                     }
+                naruto.frameAtual = naruto.frameAtual + naruto.velocidadeDoFrame;
+    }
+    if(estado == 3){//naruto atacando
+        naruto.velocidadeDoFrame = 0.3;
+        naruto.somador = 1/naruto.qtdTotalFrame;
+        if(naruto.frameAtual >= naruto.contadorDeFrame && naruto.frameAtual != naruto.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        naruto.vert1_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame + naruto.somador * naruto.contadorDeFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame + naruto.somador* naruto.contadorDeFrame;
+                        naruto.vert4_x = 0.0 + naruto.somador * naruto.contadorDeFrame;
+
+                        naruto.vert1_y = 0.0;
+                        naruto.vert2_y = 0.0;
+                        naruto.vert3_y = 1.0;
+                        naruto.vert4_y = 1.0;  
+
+                        naruto.contadorDeFrame++;  
+                    }
+            
+                    if(naruto.frameAtual > naruto.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        naruto.frameAtual = 0;
+                        naruto.contadorDeFrame =  0;
+                        naruto.vert1_x = 0.0;
+                        naruto.vert2_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert3_x = 1/naruto.qtdTotalFrame;
+                        naruto.vert4_x = 0.0;   
+                        estado = 0;
+                        
+                     }
+            naruto.frameAtual = naruto.frameAtual + naruto.velocidadeDoFrame;
+
+    }
+    
+
     glBindTexture(GL_TEXTURE_2D, id_textura_personagem_principal);
+    
     glPushMatrix();
     
     glTranslatef(personagem_principal.posX, personagem_principal.posY, 0);
     
     glBegin(GL_TRIANGLE_FAN);
-        glTexCoord2f(0,0);
+        glTexCoord2f(naruto.vert1_x,naruto.vert1_y);
         glVertex2f(-personagem_principal.largura/2, -personagem_principal.altura/2);
 
-        glTexCoord2f(1,0);
+        glTexCoord2f(naruto.vert2_x,naruto.vert2_y);
         glVertex2f(personagem_principal.largura/2, -personagem_principal.altura/2);
         
-        glTexCoord2f(1,1);
+        glTexCoord2f(naruto.vert3_x,naruto.vert3_y);
         glVertex2f(personagem_principal.largura/2, personagem_principal.altura/2);
 
-        glTexCoord2f(0,1);
+        glTexCoord2f(naruto.vert4_x,naruto.vert4_y);
         glVertex2f(-personagem_principal.largura/2, personagem_principal.altura/2);
 
-        glEnd();
-        glPopMatrix();
-        glDisable(GL_TEXTURE_2D);
-        
+     glEnd();
+     glPopMatrix();
+     glDisable(GL_TEXTURE_2D);
+              
 }
 
 void desenhaInimigo(float posX,float posY,float largura,float altura){
@@ -718,6 +833,9 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 shuriken.posX  = personagem_principal.posX;
                 shuriken.posY  = personagem_principal.posY;
                 shuriken.atirar = true;
+                naruto.frameAtual = 17;
+                naruto.contadorDeFrame=17;
+                estado = 3;
                 glutPostRedisplay();
             }
             break; 
@@ -765,12 +883,18 @@ void teclaIPressionada(int tecla, int x, int y){
     switch(tecla){
         case GLUT_KEY_RIGHT: // Seta para a direita ->
             if(personagem_principal.posX < 90){
-                personagem_principal.posX++;        
+                personagem_principal.posX++;  
+                naruto.frameAtual = 1;
+                naruto.contadorDeFrame = 1;
+                estado = 1;      
             }
             break;
         case GLUT_KEY_LEFT: // Seta para a esquerda <-
             if(personagem_principal.posX > 10){
-                personagem_principal.posX--;        
+                personagem_principal.posX--; 
+                naruto.frameAtual = 9;
+                naruto.contadorDeFrame = 9;
+                estado = 2;       
             }
             break;
         default:
@@ -1041,6 +1165,12 @@ void defineAtributos(){
     zetsu.contadorDeFrame = 0;
     zetsu.qtdTotalFrame=12;
     zetsu.velocidadeDoFrame = 1;
+
+    naruto.frameAtual = 0;
+    naruto.somador = 0;
+    naruto.contadorDeFrame = 0;
+    naruto.qtdTotalFrame = 21;
+
 }
 
 
