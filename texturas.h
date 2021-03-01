@@ -10,7 +10,6 @@ GLuint id_textura_projetil=0;
 GLuint id_pause=0;
 GLuint id_textura_projetil_inimigo=0;
 int contador_vezes_carrega_textura=1;
-int contador_de_inimigos;
 int contador_de_texturas_inimigos =0;
 
 GLuint carregaTextura(const char* arquivo){
@@ -52,7 +51,7 @@ void defineTexturas(int fase){
         case 3:
             if(contador_vezes_carrega_textura==3){
             	 //id_textura_inimigo =0;
-                id_textura_fundo = carregaTextura("fundo3.png"); 
+                 id_textura_fundo = carregaTextura("fundo3.png"); 
               	 id_textura_inimigo0 = carregaTextura("deidara.png");  
               	 id_textura_inimigo1 = carregaTextura("sasore.png"); 
               	 id_textura_inimigo2 = carregaTextura("pain.png"); 
@@ -61,6 +60,12 @@ void defineTexturas(int fase){
                  contador_vezes_carrega_textura++;
             }
             break;
+        case 4:
+            if(contador_vezes_carrega_textura==4){
+                id_textura_fundo = carregaTextura("fundo4.png"); 
+                id_textura_inimigo = carregaTextura("konan.png");  
+                contador_vezes_carrega_textura++;
+            }
         default:
             break;
     }
