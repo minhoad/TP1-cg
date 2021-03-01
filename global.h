@@ -16,9 +16,6 @@ typedef struct{
 }Jogador;
 
 typedef struct{
-    //int velocidade_do_projetil; // settar as padrões 
-    //int quantidade_de_projeteis;
-    //int tamanho_do_projetil; 
     float posX;
     float posY;
     float largura;
