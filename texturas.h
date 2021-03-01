@@ -52,11 +52,11 @@ void defineTexturas(int fase){
             if(contador_vezes_carrega_textura==3){
             	 //id_textura_inimigo =0;
                  id_textura_fundo = carregaTextura("fundo3.png"); 
-              	 id_textura_inimigo0 = carregaTextura("deidara.png");  
-              	 id_textura_inimigo1 = carregaTextura("sasore.png"); 
-              	 id_textura_inimigo2 = carregaTextura("pain.png"); 
-              	 id_textura_inimigo3 = carregaTextura("konan.png"); 
-              	 id_textura_inimigo4 = carregaTextura("hidan.png"); 
+              	 id_textura_inimigo0 = carregaTextura("hidan.png");  
+              	 id_textura_inimigo1 = carregaTextura("deidara.png"); 
+              	 id_textura_inimigo2 = carregaTextura("pain1.png"); 
+              	 id_textura_inimigo3 = carregaTextura("kisame.png"); 
+              	 id_textura_inimigo4 = carregaTextura("sasore.png"); 
                  contador_vezes_carrega_textura++;
             }
             break;
