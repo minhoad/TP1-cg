@@ -441,7 +441,6 @@ void criaMatrizInimigos(){
 
 void criaVetorInimigos(){
     for(int i=0;i<5;i++){
-        if(vetor_de_inimigos[i].dash == false){
             vetor_de_inimigos[i].posX = inimigo_aux_fase3.posX;
             vetor_de_inimigos[i].posY = inimigo_aux_fase3.posY;
             vetor_de_inimigos[i].altura = inimigo_aux_fase3.altura;
@@ -449,9 +448,11 @@ void criaVetorInimigos(){
         
             if(vetor_de_inimigos[i].vivo==true){
                 contador_de_texturas_inimigos=i;
-                desenhaInimigo(inimigo_aux_fase3.posX,inimigo_aux_fase3.posY,inimigo_aux_fase3.largura,inimigo_aux_fase3.altura);
+                if(vetor_de_inimigos[i].dash == false){
+                    desenhaInimigo(inimigo_aux_fase3.posX,inimigo_aux_fase3.posY,inimigo_aux_fase3.largura,inimigo_aux_fase3.altura);
+                }
             }
-        }
+        
         inimigo_aux_fase3.posX+=10;
     }
     inimigo_aux_fase3.posX-=50;
@@ -641,31 +642,39 @@ void desenhaMinhaCena(){
             
             }    
         if(vetor_de_inimigos[posicao_de_dash].dash==true){
-            desenhaDashInimigo(vetor_de_inimigos[posicao_de_dash].posX,
-            vetor_de_inimigos[posicao_de_dash].posY,
-            vetor_de_inimigos[posicao_de_dash].altura,
-            vetor_de_inimigos[posicao_de_dash].largura);
+            Auxiliar_de_criacao_de_obj aux;  
+            int a = posicao_de_dash;         
+            aux.posX = vetor_de_inimigos[posicao_de_dash].posX;
+            aux.posY =vetor_de_inimigos[posicao_de_dash].posY;
+            aux.altura =vetor_de_inimigos[posicao_de_dash].altura;
+            aux.largura =vetor_de_inimigos[posicao_de_dash].largura;            
 
-            if(colisao_no_player(vetor_de_inimigos[posicao_de_dash].posX,
-            vetor_de_inimigos[posicao_de_dash].posY,
-            vetor_de_inimigos[posicao_de_dash].largura,
-            vetor_de_inimigos[posicao_de_dash].altura,
-            personagem_principal.posX, 
-            personagem_principal.posY,
-            personagem_principal.altura, 
-            personagem_principal.largura,
-            personagem_principal.qtdvidas)){
-                
-                personagem_principal.qtdvidas--;
-                vetor_de_inimigos[posicao_de_dash].dash = false;
-                pode_dar_dash = false;
+    
+            desenhaDashInimigo(aux.posX,
+                                aux.posY,
+                                aux.altura,
+                                aux.largura);
 
-            }
-            vetor_de_inimigos[posicao_de_dash].posY-=2;
-            if(vetor_de_inimigos[posicao_de_dash].posY<0){
-                           vetor_de_inimigos[posicao_de_dash].dash=false;
-                           pode_dar_dash = false;
-            }   
+                if(colisao_no_player(aux.posX,
+                                    aux.posY,
+                                    aux.largura,
+                                    aux.altura,
+                                    personagem_principal.posX, 
+                                    personagem_principal.posY,
+                                    personagem_principal.altura, 
+                                    personagem_principal.largura,
+                                    personagem_principal.qtdvidas)){
+                    
+                    personagem_principal.qtdvidas--;
+                    vetor_de_inimigos[a].dash = false;
+                    pode_dar_dash = true;
+
+                }
+                aux.posY-=2;
+                if(aux.posY<0){
+                               vetor_de_inimigos[a].dash=false;
+                               pode_dar_dash = true;
+                }   
             
         }
     } 
@@ -703,7 +712,7 @@ void contadorFases(){
                 }
             }    
         }
-        //contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+        contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
@@ -835,7 +844,7 @@ void movimentoInimigoTerceiraFase(){
             inimigo_aux_fase3.posX++;
             if(contador_de_tiros_dados%10==0 && pode_dar_dash){
                 posicao_de_dash = dashInimigo();  
-                          
+                pode_dar_dash = !pode_dar_dash;
             }
            
         }
@@ -856,7 +865,8 @@ void movimentoInimigoTerceiraFase(){
             }
             inimigo_aux_fase3.posX--;
             if(contador_de_tiros_dados%10==0 && pode_dar_dash){ // true
-                posicao_de_dash = dashInimigo();  
+                posicao_de_dash = dashInimigo();
+                pode_dar_dash = !pode_dar_dash;  
                           
             }
         }
