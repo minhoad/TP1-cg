@@ -28,7 +28,6 @@ Arma kunai; // inimigo
 
 //int contador_de_tiros;
 //int maximo_de_tiros_na_tela_fase3 = 2;
-int posicao_de_dash;
 
 formacao inimigo_primeira_fase; // PRIMEIRA FASE
 formacao matriz_inimigos[3][10]; // SEGUNDA FASE
@@ -82,7 +81,7 @@ void desenhaPersonagemPrincipal(){
         
 }
 
-void desenhaInimigo(int posX,int posY,int largura,int altura){
+void desenhaInimigo(float posX,float posY,float largura,float altura){
     glColor3f(1,1,1);
     
     glEnable(GL_TEXTURE_2D);
@@ -142,8 +141,12 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
     }
     else if(fase==2){
         if(flag){
+            
             if(zetsu.frameAtual >= zetsu.contadorDeFrame && zetsu.frameAtual != zetsu.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
-                //printf("okok\n");
+            //printf("okok\n");
+            //printf("|%f\n",zetsu.frameAtual);
+            //printf("|%f|\n",zetsu.contadorDeFrame);
+            
                 zetsu.vert1_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
                 zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
                 zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador* zetsu.contadorDeFrame;
@@ -153,57 +156,63 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
                 zetsu.vert2_y = 0.0;
                 zetsu.vert3_y = 1.0;
                 zetsu.vert4_y = 1.0;  
+                    
+                printf("%f\n", zetsu.vert1_x);
+                printf("%f\n", zetsu.vert2_x);
 
                 zetsu.somador = 1/zetsu.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
                 zetsu.contadorDeFrame++;  
-            }
-    
-            if(zetsu.frameAtual >= zetsu.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
-                //printf("ok\n");
-                zetsu.frameAtual = 0;
-                zetsu.contadorDeFrame =  0;
-                zetsu.vert1_x = 0.0;
-                zetsu.vert2_x = 1/zetsu.qtdTotalFrame;
-                zetsu.vert3_x = 1/zetsu.qtdTotalFrame;
-                zetsu.vert4_x = 0.0;
-                zetsu.somador = 1/zetsu.qtdTotalFrame;
-             }
+        }
+
+        if(zetsu.frameAtual > zetsu.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+            //printf("ok\n");
+            zetsu.frameAtual = 0;
+            zetsu.contadorDeFrame =  0;
+            zetsu.vert1_x = 0.0;
+            zetsu.vert2_x = 1/zetsu.qtdTotalFrame;
+            zetsu.vert3_x = 1/zetsu.qtdTotalFrame;
+            zetsu.vert4_x = 0.0;
+            zetsu.somador = 0;
+         }
+
+        zetsu.frameAtual = zetsu.frameAtual + zetsu.velocidadeDoFrame;
         
     }
           
     if(!flag){
+            
             if(zetsu.frameAtual >= zetsu.contadorDeFrame && zetsu.frameAtual != zetsu.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
-                printf("%f\n",zetsu.contadorDeFrame);
-                zetsu.vert1_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
-                zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
-                zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador* zetsu.contadorDeFrame;
-                zetsu.vert4_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
-
-                zetsu.vert1_y = 0.0;
-                zetsu.vert2_y = 0.0;
-                zetsu.vert3_y = 1.0;
-                zetsu.vert4_y = 1.0;  
-
-                zetsu.somador = 1/zetsu.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
-                zetsu.contadorDeFrame++;  
-            }
+            //printf("okok\n");
             
-            if(zetsu.frameAtual >= zetsu.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
-                //printf("ok\n");
-                zetsu.frameAtual = (zetsu.qtdTotalFrame/2)-zetsu.velocidadeDoFrame;
-                zetsu.contadorDeFrame =  (zetsu.qtdTotalFrame/2)-zetsu.velocidadeDoFrame;
-                zetsu.somador = 1/zetsu.qtdTotalFrame;
-                zetsu.vert1_x = zetsu.somador *zetsu.contadorDeFrame;
-                zetsu.vert2_x = 1/zetsu.qtdTotalFrame*zetsu.contadorDeFrame;
-                zetsu.vert3_x = 1/zetsu.qtdTotalFrame*zetsu.contadorDeFrame;
-                zetsu.vert4_x = zetsu.somador *zetsu.contadorDeFrame;
-                
-             }
-            
-    }
+            zetsu.vert1_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
+            zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
+            zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador* zetsu.contadorDeFrame;
+            zetsu.vert4_x = 0.0 + zetsu.somador * zetsu.contadorDeFrame;
 
+            zetsu.vert1_y = 0.0;
+            zetsu.vert2_y = 0.0;
+            zetsu.vert3_y = 1.0;
+            zetsu.vert4_y = 1.0;  
+
+            zetsu.somador = 1/zetsu.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+            zetsu.contadorDeFrame++;  
+        }
+
+        if(zetsu.frameAtual > zetsu.qtdTotalFrame || zetsu.vert1_x < 1/zetsu.qtdTotalFrame * zetsu.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+            //printf("ok\n");
+            zetsu.frameAtual = (zetsu.qtdTotalFrame/2)-1;
+            zetsu.contadorDeFrame =  zetsu.qtdTotalFrame/2;
+            zetsu.somador = 1/zetsu.qtdTotalFrame;
+            zetsu.vert1_x = zetsu.somador * zetsu.contadorDeFrame;
+            zetsu.vert2_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
+            zetsu.vert3_x = 1/zetsu.qtdTotalFrame + zetsu.somador * zetsu.contadorDeFrame;
+            zetsu.vert4_x = zetsu.somador * zetsu.contadorDeFrame;
+            
+         }
 
         zetsu.frameAtual = zetsu.frameAtual + zetsu.velocidadeDoFrame;    
+    }
+ 
 
         glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
     
@@ -277,12 +286,12 @@ void desenhaInimigo(int posX,int posY,int largura,int altura){
        
 }}
 
-void desenhaDashInimigo(int posX,int posY, int altura,int largura){
+/*void desenhaDashInimigo(int posX,int posY, int altura,int largura, int a){
     glColor3f(1,1,1);
     
     //glEnable(GL_TEXTURE_2D);
 
-    switch(posicao_de_dash){
+    switch(a){
     		case 0:
     			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo0);
 			break;
@@ -322,7 +331,7 @@ void desenhaDashInimigo(int posX,int posY, int altura,int largura){
         glPopMatrix();
         glDisable(GL_TEXTURE_2D);
        
-}
+}*/
 
 
 void desenhaFundo(){
@@ -448,9 +457,8 @@ void criaVetorInimigos(){
         
             if(vetor_de_inimigos[i].vivo==true){
                 contador_de_texturas_inimigos=i;
-                if(vetor_de_inimigos[i].dash == false){
-                    desenhaInimigo(inimigo_aux_fase3.posX,inimigo_aux_fase3.posY,inimigo_aux_fase3.largura,inimigo_aux_fase3.altura);
-                }
+                desenhaInimigo(inimigo_aux_fase3.posX,inimigo_aux_fase3.posY,inimigo_aux_fase3.largura,inimigo_aux_fase3.altura);
+               
             }
         
         inimigo_aux_fase3.posX+=10;
@@ -458,14 +466,14 @@ void criaVetorInimigos(){
     inimigo_aux_fase3.posX-=50;
 }
 
-bool colisao(int posX_projetil,
-            int posY_projetil,
-            int largura_projetil,
-            int altura_projetil, 
-            int posX_inimigo, 
-            int posY_inimigo, 
-            int altura_inimigo, 
-            int largura_inimigo,
+bool colisao(float posX_projetil,
+            float posY_projetil,
+            float largura_projetil,
+           float altura_projetil, 
+            float posX_inimigo, 
+            float posY_inimigo, 
+            float altura_inimigo, 
+            float largura_inimigo,
             bool vivo){
 
     if(posY_projetil+altura_projetil == posY_inimigo){
@@ -490,14 +498,14 @@ bool colisao(int posX_projetil,
     return false;
 }
 
-bool colisao_no_player(int posX_projetil,
-            int posY_projetil,
-            int largura_projetil,
-            int altura_projetil, 
-            int posX_inimigo, 
-            int posY_inimigo, 
-            int altura_inimigo, 
-            int largura_inimigo,
+bool colisao_no_player(float posX_projetil,
+            float posY_projetil,
+            float largura_projetil,
+            float altura_projetil, 
+            float posX_inimigo, 
+            float posY_inimigo, 
+            float altura_inimigo, 
+            float largura_inimigo,
             int qtdvidas){
 
     if(posY_projetil-altura_projetil == posY_inimigo){//+altura_inimigo/2){
@@ -641,42 +649,7 @@ void desenhaMinhaCena(){
                        }               
             
             }    
-        if(vetor_de_inimigos[posicao_de_dash].dash==true){
-            Auxiliar_de_criacao_de_obj aux;  
-            int a = posicao_de_dash;         
-            aux.posX = vetor_de_inimigos[posicao_de_dash].posX;
-            aux.posY =vetor_de_inimigos[posicao_de_dash].posY;
-            aux.altura =vetor_de_inimigos[posicao_de_dash].altura;
-            aux.largura =vetor_de_inimigos[posicao_de_dash].largura;            
-
-    
-            desenhaDashInimigo(aux.posX,
-                                aux.posY,
-                                aux.altura,
-                                aux.largura);
-
-                if(colisao_no_player(aux.posX,
-                                    aux.posY,
-                                    aux.largura,
-                                    aux.altura,
-                                    personagem_principal.posX, 
-                                    personagem_principal.posY,
-                                    personagem_principal.altura, 
-                                    personagem_principal.largura,
-                                    personagem_principal.qtdvidas)){
-                    
-                    personagem_principal.qtdvidas--;
-                    vetor_de_inimigos[a].dash = false;
-                    pode_dar_dash = true;
-
-                }
-                aux.posY-=2;
-                if(aux.posY<0){
-                               vetor_de_inimigos[a].dash=false;
-                               pode_dar_dash = true;
-                }   
-            
-        }
+        
     } 
     
     
@@ -712,7 +685,7 @@ void contadorFases(){
                 }
             }    
         }
-        contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+        //contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
@@ -821,15 +794,9 @@ int projetilrandom_fase3(){
     return aux;
 }
 
-int dashInimigo(){
-    int aux;
-    aux = projetilrandom_fase3();
-    vetor_de_inimigos[aux].dash = true;
-    return aux;
-}
 
 void movimentoInimigoTerceiraFase(){
-    int aux, contador_de_tiros_dados=0;
+    int aux;
     if(flag){
         if(inimigo_aux_fase3.posX < 57){
             
@@ -838,14 +805,11 @@ void movimentoInimigoTerceiraFase(){
                 kunai.posX = vetor_de_inimigos[aux].posX;
                 kunai.posY = vetor_de_inimigos[aux].posY;       
                 kunai.atirar = true; 
-                contador_de_tiros_dados++;        
+                        
                 glutPostRedisplay();
             }
             inimigo_aux_fase3.posX++;
-            if(contador_de_tiros_dados%10==0 && pode_dar_dash){
-                posicao_de_dash = dashInimigo();  
-                pode_dar_dash = !pode_dar_dash;
-            }
+            
            
         }
         else{
@@ -864,11 +828,7 @@ void movimentoInimigoTerceiraFase(){
                
             }
             inimigo_aux_fase3.posX--;
-            if(contador_de_tiros_dados%10==0 && pode_dar_dash){ // true
-                posicao_de_dash = dashInimigo();
-                pode_dar_dash = !pode_dar_dash;  
-                          
-            }
+            
         }
         else{
             flag = !flag;
@@ -886,7 +846,7 @@ void movimentoInimigoSegundaFase(){
                 x=pAux[0];
                 y=pAux[1];
                 free(pAux); 
-            if(inimigo_aux.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){               
+            if(kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){               
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;        
                 kunai.atirar = true;         
@@ -907,7 +867,7 @@ void movimentoInimigoSegundaFase(){
             y=pAux[1];
             free(pAux);           
         
-            if(inimigo_aux.posX%5==0 && kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
+            if(kunai.atirar==false ){//contador_de_tiros_tela < maximo_de_tiros_tela_fase2){
                 kunai.posX = matriz_inimigos[x][y].posX;
                 kunai.posY = matriz_inimigos[x][y].posY;               
                 kunai.atirar = true;         
@@ -928,7 +888,7 @@ void movimentoInimigoPrimeiraFase(){
     if(flag){
         if(inimigo_primeira_fase.posX < 97){
 
-            if(inimigo_primeira_fase.posX%14==0 && kunai.atirar == false){
+            if(kunai.atirar == false){
                 kunai.posX = inimigo_primeira_fase.posX;
                 kunai.posY = inimigo_primeira_fase.posY;
                 kunai.atirar = true;         
@@ -943,7 +903,7 @@ void movimentoInimigoPrimeiraFase(){
     }else{
         if(inimigo_primeira_fase.posX > 3){
 
-            if(inimigo_primeira_fase.posX%14==0 && kunai.atirar == false){ // contador de tiros 
+            if(kunai.atirar == false){ // contador de tiros 
 
                 kunai.posX = inimigo_primeira_fase.posX;
                 kunai.posY = inimigo_primeira_fase.posY;
