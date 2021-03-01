@@ -38,6 +38,11 @@ animacao kakashi;
 animacao zetsu;
 animacao naruto;
 animacao attack_naruto;
+animacao hidan;
+animacao deidara;
+animacao pain;
+animacao kisame;
+animacao sasore;
 
 bool pause = false;
 
@@ -363,43 +368,469 @@ void desenhaInimigo(float posX,float posY,float largura,float altura){
     else if(fase == 3){
     	switch(contador_de_texturas_inimigos){
     		case 0:
-    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo0);
+    			if(flag){
+            
+                    if(hidan.frameAtual >= hidan.contadorDeFrame && hidan.frameAtual != hidan.contadorDeFrame){//Sempre que o FrameAtual for    igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    //printf("|%f\n",hidan.frameAtual);
+                    //printf("|%f|\n",hidan.contadorDeFrame);
+                    
+                        hidan.vert1_x = 0.0 + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert2_x = 1/hidan.qtdTotalFrame + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert3_x = 1/hidan.qtdTotalFrame + hidan.somador* hidan.contadorDeFrame;
+                        hidan.vert4_x = 0.0 + hidan.somador * hidan.contadorDeFrame;
+
+                        hidan.vert1_y = 0.0;
+                        hidan.vert2_y = 0.0;
+                        hidan.vert3_y = 1.0;
+                        hidan.vert4_y = 1.0;  
+                            
+                        //printf("%f\n", hidan.vert1_x);
+                        //printf("%f\n", hidan.vert2_x);
+
+                        hidan.somador = 1/hidan.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        hidan.contadorDeFrame++;  
+                }
+
+                    if(hidan.frameAtual > hidan.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        hidan.frameAtual = 0;
+                        hidan.contadorDeFrame =  0;
+                        hidan.vert1_x = 0.0;
+                        hidan.vert2_x = 1/hidan.qtdTotalFrame;
+                        hidan.vert3_x = 1/hidan.qtdTotalFrame;
+                        hidan.vert4_x = 0.0;
+                        hidan.somador = 0;
+                     }
+
+                    hidan.frameAtual = hidan.frameAtual + hidan.velocidadeDoFrame;
+                    
+                }
+                      
+                if(!flag){
+                        
+                        if(hidan.frameAtual >= hidan.contadorDeFrame && hidan.frameAtual != hidan.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        
+                        hidan.vert1_x = 0.0 + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert2_x = 1/hidan.qtdTotalFrame + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert3_x = 1/hidan.qtdTotalFrame + hidan.somador* hidan.contadorDeFrame;
+                        hidan.vert4_x = 0.0 + hidan.somador * hidan.contadorDeFrame;
+
+                        hidan.vert1_y = 0.0;
+                        hidan.vert2_y = 0.0;
+                        hidan.vert3_y = 1.0;
+                        hidan.vert4_y = 1.0;  
+
+                        hidan.somador = 1/hidan.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        hidan.contadorDeFrame++;  
+                    }
+
+                    if(hidan.frameAtual > hidan.qtdTotalFrame || hidan.vert1_x < 1/hidan.qtdTotalFrame * hidan.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        hidan.frameAtual = (hidan.qtdTotalFrame/2)-1;
+                        hidan.contadorDeFrame =  hidan.qtdTotalFrame/2;
+                        hidan.somador = 1/hidan.qtdTotalFrame;
+                        hidan.vert1_x = hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert2_x = 1/hidan.qtdTotalFrame + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert3_x = 1/hidan.qtdTotalFrame + hidan.somador * hidan.contadorDeFrame;
+                        hidan.vert4_x = hidan.somador * hidan.contadorDeFrame;
+                        
+                     }
+
+        hidan.frameAtual = hidan.frameAtual + hidan.velocidadeDoFrame;    
+    }
+
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo0);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+                            
+        glTexCoord2f(hidan.vert1_x, hidan.vert1_y); //
+        glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+        glTexCoord2f(hidan.vert2_x, hidan.vert2_y); //
+        glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+ 
+        glTexCoord2f(hidan.vert3_x, hidan.vert3_y); //
+        glVertex3f(largura/2, altura/2,0); // |     | // 15 , 20
+
+        glTexCoord2f(hidan.vert4_x, hidan.vert4_y); //
+        glVertex3f(-largura/2, altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();
+
 			break;
 		case 1:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo1);
+			if(deidara.frameAtual >= deidara.contadorDeFrame && deidara.frameAtual != deidara.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    //printf("|%f\n",deidara.frameAtual);
+                    //printf("|%f|\n",deidara.contadorDeFrame);
+                    
+                        deidara.vert1_x = 0.0 + deidara.somador * deidara.contadorDeFrame;
+                        deidara.vert2_x = 1/deidara.qtdTotalFrame + deidara.somador * deidara.contadorDeFrame;
+                        deidara.vert3_x = 1/deidara.qtdTotalFrame + deidara.somador* deidara.contadorDeFrame;
+                        deidara.vert4_x = 0.0 + deidara.somador * deidara.contadorDeFrame;
+
+                        deidara.vert1_y = 0.0;
+                        deidara.vert2_y = 0.0;
+                        deidara.vert3_y = 1.0;
+                        deidara.vert4_y = 1.0;  
+                            
+                        //printf("%f\n", deidara.vert1_x);
+                        //printf("%f\n", deidara.vert2_x);
+
+                        deidara.somador = 1/deidara.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        deidara.contadorDeFrame++;  
+                }
+
+                    if(deidara.frameAtual > deidara.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        deidara.frameAtual = 0;
+                        deidara.contadorDeFrame =  0;
+                        deidara.vert1_x = 0.0;
+                        deidara.vert2_x = 1/deidara.qtdTotalFrame;
+                        deidara.vert3_x = 1/deidara.qtdTotalFrame;
+                        deidara.vert4_x = 0.0;
+                        deidara.somador = 0;
+                     }
+
+                    deidara.frameAtual = deidara.frameAtual + deidara.velocidadeDoFrame;
+                    
+                
+
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo1);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+                            
+        glTexCoord2f(deidara.vert1_x, deidara.vert1_y); //
+        glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+        glTexCoord2f(deidara.vert2_x, deidara.vert2_y); //
+        glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+ 
+        glTexCoord2f(deidara.vert3_x, deidara.vert3_y); //
+        glVertex3f(largura/2, altura/2,0); // |     | // 15 , 20
+
+        glTexCoord2f(deidara.vert4_x, deidara.vert4_y); //
+        glVertex3f(-largura/2, altura/2,0); // v1---v2 // -15, 20
+    glEnd();
+    
+    glPopMatrix();
 			break;
 		case 2:
-    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo2);
+    			
+        if(flag){
+            
+                    if(pain.frameAtual >= pain.contadorDeFrame && pain.frameAtual != pain.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    //printf("|%f\n",pain.frameAtual);
+                    //printf("|%f|\n",pain.contadorDeFrame);
+                    
+                        pain.vert1_x = 0.0 + pain.somador * pain.contadorDeFrame;
+                        pain.vert2_x = 1/pain.qtdTotalFrame + pain.somador * pain.contadorDeFrame;
+                        pain.vert3_x = 1/pain.qtdTotalFrame + pain.somador* pain.contadorDeFrame;
+                        pain.vert4_x = 0.0 + pain.somador * pain.contadorDeFrame;
+
+                        pain.vert1_y = 0.0;
+                        pain.vert2_y = 0.0;
+                        pain.vert3_y = 1.0;
+                        pain.vert4_y = 1.0;  
+                            
+                        //printf("%f\n", pain.vert1_x);
+                        //printf("%f\n", pain.vert2_x);
+
+                        pain.somador = 1/pain.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        pain.contadorDeFrame++;  
+                }
+
+                    if(pain.frameAtual > pain.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        pain.frameAtual = 0;
+                        pain.contadorDeFrame =  0;
+                        pain.vert1_x = 0.0;
+                        pain.vert2_x = 1/pain.qtdTotalFrame;
+                        pain.vert3_x = 1/pain.qtdTotalFrame;
+                        pain.vert4_x = 0.0;
+                        pain.somador = 0;
+                     }
+
+                    pain.frameAtual = pain.frameAtual + pain.velocidadeDoFrame;
+                    
+                }
+                      
+                if(!flag){
+                        
+                        if(pain.frameAtual >= pain.contadorDeFrame && pain.frameAtual != pain.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        
+                        pain.vert1_x = 0.0 + pain.somador * pain.contadorDeFrame;
+                        pain.vert2_x = 1/pain.qtdTotalFrame + pain.somador * pain.contadorDeFrame;
+                        pain.vert3_x = 1/pain.qtdTotalFrame + pain.somador* pain.contadorDeFrame;
+                        pain.vert4_x = 0.0 + pain.somador * pain.contadorDeFrame;
+
+                        pain.vert1_y = 0.0;
+                        pain.vert2_y = 0.0;
+                        pain.vert3_y = 1.0;
+                        pain.vert4_y = 1.0;  
+
+                        pain.somador = 1/pain.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        pain.contadorDeFrame++;  
+                    }
+
+                    if(pain.frameAtual > pain.qtdTotalFrame || pain.vert1_x < 1/pain.qtdTotalFrame * pain.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        pain.frameAtual = (pain.qtdTotalFrame/2)-1;
+                        pain.contadorDeFrame =  pain.qtdTotalFrame/2;
+                        pain.somador = 1/pain.qtdTotalFrame;
+                        pain.vert1_x = pain.somador * pain.contadorDeFrame;
+                        pain.vert2_x = 1/pain.qtdTotalFrame + pain.somador * pain.contadorDeFrame;
+                        pain.vert3_x = 1/pain.qtdTotalFrame + pain.somador * pain.contadorDeFrame;
+                        pain.vert4_x = pain.somador * pain.contadorDeFrame;
+                        
+                     }
+
+        pain.frameAtual = pain.frameAtual + pain.velocidadeDoFrame;    
+    }
+
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo2);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+                            
+        glTexCoord2f(pain.vert1_x, pain.vert1_y); //
+        glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+        glTexCoord2f(pain.vert2_x, pain.vert2_y); //
+        glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+ 
+        glTexCoord2f(pain.vert3_x, pain.vert3_y); //
+        glVertex3f(largura/2, altura/2,0); // |     | // 15 , 20
+
+        glTexCoord2f(pain.vert4_x, pain.vert4_y); //
+        glVertex3f(-largura/2, altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();
+
+
 			break;
 		case 3:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo3);
+            if(flag){
+            
+                    if(kisame.frameAtual >= kisame.contadorDeFrame && kisame.frameAtual != kisame.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    //printf("|%f\n",kisame.frameAtual);
+                    //printf("|%f|\n",kisame.contadorDeFrame);
+                    
+                        kisame.vert1_x = 0.0 + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert2_x = 1/kisame.qtdTotalFrame + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert3_x = 1/kisame.qtdTotalFrame + kisame.somador* kisame.contadorDeFrame;
+                        kisame.vert4_x = 0.0 + kisame.somador * kisame.contadorDeFrame;
+
+                        kisame.vert1_y = 0.0;
+                        kisame.vert2_y = 0.0;
+                        kisame.vert3_y = 1.0;
+                        kisame.vert4_y = 1.0;  
+                            
+                        //printf("%f\n", kisame.vert1_x);
+                        //printf("%f\n", kisame.vert2_x);
+
+                        kisame.somador = 1/kisame.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        kisame.contadorDeFrame++;  
+                }
+
+                    if(kisame.frameAtual > kisame.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        kisame.frameAtual = 0;
+                        kisame.contadorDeFrame =  0;
+                        kisame.vert1_x = 0.0;
+                        kisame.vert2_x = 1/kisame.qtdTotalFrame;
+                        kisame.vert3_x = 1/kisame.qtdTotalFrame;
+                        kisame.vert4_x = 0.0;
+                        kisame.somador = 0;
+                     }
+
+                    kisame.frameAtual = kisame.frameAtual + kisame.velocidadeDoFrame;
+                    
+                }
+                      
+                if(!flag){
+                        
+                        if(kisame.frameAtual >= kisame.contadorDeFrame && kisame.frameAtual != kisame.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        
+                        kisame.vert1_x = 0.0 + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert2_x = 1/kisame.qtdTotalFrame + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert3_x = 1/kisame.qtdTotalFrame + kisame.somador* kisame.contadorDeFrame;
+                        kisame.vert4_x = 0.0 + kisame.somador * kisame.contadorDeFrame;
+
+                        kisame.vert1_y = 0.0;
+                        kisame.vert2_y = 0.0;
+                        kisame.vert3_y = 1.0;
+                        kisame.vert4_y = 1.0;  
+
+                        kisame.somador = 1/kisame.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        kisame.contadorDeFrame++;  
+                    }
+
+                    if(kisame.frameAtual > kisame.qtdTotalFrame || kisame.vert1_x < 1/kisame.qtdTotalFrame * kisame.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        kisame.frameAtual = (kisame.qtdTotalFrame/2)-1;
+                        kisame.contadorDeFrame =  kisame.qtdTotalFrame/2;
+                        kisame.somador = 1/kisame.qtdTotalFrame;
+                        kisame.vert1_x = kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert2_x = 1/kisame.qtdTotalFrame + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert3_x = 1/kisame.qtdTotalFrame + kisame.somador * kisame.contadorDeFrame;
+                        kisame.vert4_x = kisame.somador * kisame.contadorDeFrame;
+                        
+                     }
+
+        kisame.frameAtual = kisame.frameAtual + kisame.velocidadeDoFrame;    
+    }
+
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo3);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+                            
+        glTexCoord2f(kisame.vert1_x, kisame.vert1_y); //
+        glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+        glTexCoord2f(kisame.vert2_x, kisame.vert2_y); //
+        glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+ 
+        glTexCoord2f(kisame.vert3_x, kisame.vert3_y); //
+        glVertex3f(largura/2, altura/2,0); // |     | // 15 , 20
+
+        glTexCoord2f(kisame.vert4_x, kisame.vert4_y); //
+        glVertex3f(-largura/2, altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();
+			
+
 			break;
 		case 4:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo4);
+            if(flag){
+            
+                    if(sasore.frameAtual >= sasore.contadorDeFrame && sasore.frameAtual != sasore.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    //printf("|%f\n",sasore.frameAtual);
+                    //printf("|%f|\n",sasore.contadorDeFrame);
+                    
+                        sasore.vert1_x = 0.0 + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert2_x = 1/sasore.qtdTotalFrame + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert3_x = 1/sasore.qtdTotalFrame + sasore.somador* sasore.contadorDeFrame;
+                        sasore.vert4_x = 0.0 + sasore.somador * sasore.contadorDeFrame;
+
+                        sasore.vert1_y = 0.0;
+                        sasore.vert2_y = 0.0;
+                        sasore.vert3_y = 1.0;
+                        sasore.vert4_y = 1.0;  
+                            
+                        //printf("%f\n", sasore.vert1_x);
+                        //printf("%f\n", sasore.vert2_x);
+
+                        sasore.somador = 1/sasore.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        sasore.contadorDeFrame++;  
+                }
+
+                    if(sasore.frameAtual > sasore.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        sasore.frameAtual = 0;
+                        sasore.contadorDeFrame =  0;
+                        sasore.vert1_x = 0.0;
+                        sasore.vert2_x = 1/sasore.qtdTotalFrame;
+                        sasore.vert3_x = 1/sasore.qtdTotalFrame;
+                        sasore.vert4_x = 0.0;
+                        sasore.somador = 0;
+                     }
+
+                    sasore.frameAtual = sasore.frameAtual + sasore.velocidadeDoFrame;
+                    
+                }
+                      
+                if(!flag){
+                        
+                        if(sasore.frameAtual >= sasore.contadorDeFrame && sasore.frameAtual != sasore.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                        //printf("okok\n");
+                        
+                        sasore.vert1_x = 0.0 + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert2_x = 1/sasore.qtdTotalFrame + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert3_x = 1/sasore.qtdTotalFrame + sasore.somador* sasore.contadorDeFrame;
+                        sasore.vert4_x = 0.0 + sasore.somador * sasore.contadorDeFrame;
+
+                        sasore.vert1_y = 0.0;
+                        sasore.vert2_y = 0.0;
+                        sasore.vert3_y = 1.0;
+                        sasore.vert4_y = 1.0;  
+
+                        sasore.somador = 1/sasore.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                        sasore.contadorDeFrame++;  
+                    }
+
+                    if(sasore.frameAtual > sasore.qtdTotalFrame || sasore.vert1_x < 1/sasore.qtdTotalFrame * sasore.qtdTotalFrame/2){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                        //printf("ok\n");
+                        sasore.frameAtual = (sasore.qtdTotalFrame/2)-1;
+                        sasore.contadorDeFrame =  sasore.qtdTotalFrame/2;
+                        sasore.somador = 1/sasore.qtdTotalFrame;
+                        sasore.vert1_x = sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert2_x = 1/sasore.qtdTotalFrame + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert3_x = 1/sasore.qtdTotalFrame + sasore.somador * sasore.contadorDeFrame;
+                        sasore.vert4_x = sasore.somador * sasore.contadorDeFrame;
+                        
+                     }
+
+        sasore.frameAtual = sasore.frameAtual + sasore.velocidadeDoFrame;    
+    }
+
+    glBindTexture(GL_TEXTURE_2D, id_textura_inimigo4);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    
+    glBegin(GL_TRIANGLE_FAN);
+                            
+        glTexCoord2f(sasore.vert1_x, sasore.vert1_y); //
+        glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+        glTexCoord2f(sasore.vert2_x, sasore.vert2_y); //
+        glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+ 
+        glTexCoord2f(sasore.vert3_x, sasore.vert3_y); //
+        glVertex3f(largura/2, altura/2,0); // |     | // 15 , 20
+
+        glTexCoord2f(sasore.vert4_x, sasore.vert4_y); //
+        glVertex3f(-largura/2, altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();			
+    
 			break;
 		default:
 			break;
     	}
-        glPushMatrix();
-    
-        glTranslatef(posX, posY, 0);
-    
-        glBegin(GL_TRIANGLE_FAN);
-            glTexCoord2f(0,0);
-            glVertex2f(-largura/2, -altura/2);
-
-            glTexCoord2f(1,0);
-            glVertex2f(largura/2, -altura/2);
-            
-            glTexCoord2f(1,1);
-            glVertex2f(largura/2, altura/2);
-
-            glTexCoord2f(0,1);
-            glVertex2f(-largura/2, altura/2);
-
-        glEnd();
-        glPopMatrix();
-        glDisable(GL_TEXTURE_2D);
+        
     }
     else if(fase == 4){
         glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
@@ -425,53 +856,6 @@ void desenhaInimigo(float posX,float posY,float largura,float altura){
             glDisable(GL_TEXTURE_2D);
        }
 }
-
-/*void desenhaDashInimigo(int posX,int posY, int altura,int largura, int a){
-    glColor3f(1,1,1);
-    
-    //glEnable(GL_TEXTURE_2D);
-
-    switch(a){
-    		case 0:
-    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo0);
-			break;
-		case 1:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo1);
-			break;
-		case 2:
-    			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo2);
-			break;
-		case 3:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo3);
-			break;
-		case 4:
-			glBindTexture(GL_TEXTURE_2D, id_textura_inimigo4);
-			break;
-		default:
-			break;
-    };
-    glPushMatrix();
-    
-    glTranslatef(posX, posY, 0);
-    
-    glBegin(GL_TRIANGLE_FAN);
-        glTexCoord2f(0,0);
-        glVertex2f(-largura/2, -altura/2);
-
-        glTexCoord2f(1,0);
-        glVertex2f(largura/2, -altura/2);
-        
-        glTexCoord2f(1,1);
-        glVertex2f(largura/2, altura/2);
-
-        glTexCoord2f(0,1);
-        glVertex2f(-largura/2, altura/2);
-
-        glEnd();
-        glPopMatrix();
-        glDisable(GL_TEXTURE_2D);
-       
-}*/
 
 
 void desenhaFundo(){
@@ -936,7 +1320,7 @@ void contadorFases(){
                         contador_de_inimigos_mortos++;                
                     }
             }
-            contador_de_inimigos_mortos=5;
+           // contador_de_inimigos_mortos=5;
             if(contador_de_inimigos_mortos==5){
                 fase++;            
             }
@@ -1372,6 +1756,37 @@ void defineAtributos(){
     attack_naruto.contadorDeFrame = 0;
     attack_naruto.qtdTotalFrame=4;
     attack_naruto.velocidadeDoFrame = 0.5;
+
+    hidan.frameAtual = 0;
+    hidan.somador = 0;
+    hidan.contadorDeFrame = 0;
+    hidan.qtdTotalFrame=12;
+    hidan.velocidadeDoFrame = 1.0;
+    
+    deidara.frameAtual = 0;
+    deidara.somador = 0;
+    deidara.contadorDeFrame = 0;
+    deidara.qtdTotalFrame=4;
+    deidara.velocidadeDoFrame = 0.4;
+    
+    pain.frameAtual = 0;
+    pain.somador = 0;
+    pain.contadorDeFrame = 0;
+    pain.qtdTotalFrame=16;
+    pain.velocidadeDoFrame = 0.8;
+    
+    kisame.frameAtual = 0;
+    kisame.somador = 0;
+    kisame.contadorDeFrame = 0;
+    kisame.qtdTotalFrame=10;
+    kisame.velocidadeDoFrame = 0.6;
+
+    sasore.frameAtual = 0;
+    sasore.somador = 0;
+    sasore.contadorDeFrame = 0;
+    sasore.qtdTotalFrame=12;
+    sasore.velocidadeDoFrame = 0.8;
+
 
 }
 
