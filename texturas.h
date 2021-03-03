@@ -9,6 +9,16 @@ GLuint id_textura_inimigo4=0; // 		FASE 3
 GLuint id_textura_projetil=0; 
 GLuint id_pause=0;
 GLuint id_textura_projetil_inimigo=0;
+
+GLuint id_textura_nome1=0;
+GLuint id_textura_nome2=0;
+GLuint id_textura_nome3=0;
+GLuint id_textura_nome4=0;
+GLuint id_textura_nome5=0;
+GLuint id_texturas = 0;
+
+GLuint id_textura_vida3fase =0;
+
 int contador_vezes_carrega_textura=1;
 int contador_de_texturas_inimigos =0;
 
@@ -57,6 +67,12 @@ void defineTexturas(int fase){
               	 id_textura_inimigo2 = carregaTextura("pain1.png"); 
               	 id_textura_inimigo3 = carregaTextura("kisame.png"); 
               	 id_textura_inimigo4 = carregaTextura("sasore.png"); 
+                 id_textura_nome1 = carregaTextura("nome_deidara.png");
+                 id_textura_nome2 = carregaTextura("nome_hidan.png");
+                 id_textura_nome3 = carregaTextura("nome_pain.png");
+                 id_textura_nome4 = carregaTextura("nome_kisame.png");
+                 id_textura_nome5 = carregaTextura("nome_sasore.png");
+                 id_textura_vida3fase = carregaTextura("vida_3fase.png");
                  contador_vezes_carrega_textura++;
             }
             break;
