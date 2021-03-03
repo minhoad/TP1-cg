@@ -43,6 +43,9 @@ animacao deidara;
 animacao pain;
 animacao kisame;
 animacao sasore;
+animacao vidaFase3;
+
+
 
 bool pause = false;
 
@@ -881,6 +884,116 @@ void desenhaFundo(){
     glDisable(GL_TEXTURE_2D);
 }
 
+void desenhaNomeDoInimigo(int posX,int posY,GLuint id_texturas){// Ainda em teste, pois a barra de vida nao esta tao bonita.
+    
+    //glColor3f(1.0,1.0,1.0);
+
+    glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    glBindTexture(GL_TEXTURE_2D,id_texturas);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(0, 0);
+        glVertex2f(-7.5, -1); // v3---v2
+
+        glTexCoord2f(1, 0);
+        glVertex2f(7.5, -1); // |     |
+
+        glTexCoord2f(1, 1);
+        glVertex2f(7.5, 1); // |     |
+
+        glTexCoord2f(0, 1);
+        glVertex2f(-7.5, 1); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+
+}
+
+void desenhaBarraDeVidaInimigo(int posX,int posY,int i){// Ainda em teste, pois a barra de vida nao esta tao bonita.
+    
+    //glColor3f(1.0,1.0,1.0);
+    if(vetor_de_inimigos[i].qtdvidas==2){
+                vidaFase3.vert1_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+                vidaFase3.vert2_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert3_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert4_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+
+                vidaFase3.vert1_y = 0.0;
+                vidaFase3.vert2_y = 0.0;
+                vidaFase3.vert3_y = 1.0;
+                vidaFase3.vert4_y = 1.0;
+
+
+
+    }
+
+    else if(vetor_de_inimigos[i].qtdvidas==1){
+                vidaFase3.vert1_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+                vidaFase3.vert2_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert3_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert4_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+
+                vidaFase3.vert1_y = 0.0;
+                vidaFase3.vert2_y = 0.0;
+                vidaFase3.vert3_y = 1.0;
+                vidaFase3.vert4_y = 1.0;
+
+
+
+    }
+    else if(vetor_de_inimigos[i].qtdvidas==0){
+                vidaFase3.vert1_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+                vidaFase3.vert2_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert3_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i] + 1/vidaFase3.qtdTotalFrame;
+                vidaFase3.vert4_x = vidaFase3.somador_vetor[i] * vidaFase3.frameAtual_vetor[i];
+
+                vidaFase3.vert1_y = 0.0;
+                vidaFase3.vert2_y = 0.0;
+                vidaFase3.vert3_y = 1.0;
+                vidaFase3.vert4_y = 1.0;
+}
+
+    glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    glBindTexture(GL_TEXTURE_2D,id_textura_vida3fase);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(vidaFase3.vert1_x, vidaFase3.vert1_y);
+        glVertex2f(-4, -2.0); // v3---v2
+
+        glTexCoord2f(vidaFase3.vert2_x, vidaFase3.vert2_y);
+        glVertex2f(4, -2.0); // |     |
+
+        glTexCoord2f(vidaFase3.vert3_x, vidaFase3.vert3_y);
+        glVertex2f(4, 2.0); // |     |
+
+        glTexCoord2f(vidaFase3.vert4_x, vidaFase3.vert4_y);
+        glVertex2f(-4, 2.0); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+
+}
+
+
+
+
+
 void desenhaPause(){
     
     glColor3f(1,1,1);
@@ -1169,7 +1282,21 @@ void desenhaMinhaCena(){
             }
     } 
     else if(fase==3){
+        desenhaNomeDoInimigo(10,98,id_textura_nome1);
+        desenhaNomeDoInimigo(10,92,id_textura_nome2);
+        desenhaNomeDoInimigo(90,98,id_textura_nome5);
+        desenhaNomeDoInimigo(90,92,id_textura_nome4);
+        desenhaNomeDoInimigo(50,98,id_textura_nome3);        
+                    
+        desenhaBarraDeVidaInimigo(10,95,0);
+        desenhaBarraDeVidaInimigo(10,89,1);
+        desenhaBarraDeVidaInimigo(90,95,2);
+        desenhaBarraDeVidaInimigo(90,89,3);
+        desenhaBarraDeVidaInimigo(50,95,4);
+        
+    
         criaVetorInimigos();
+        
         if(shuriken.atirar){
                 desenhaProjetil(1);
                 for(int i=0;i<5;i++){
@@ -1177,8 +1304,26 @@ void desenhaMinhaCena(){
                                    shuriken.altura, vetor_de_inimigos[i].posX,
                                    vetor_de_inimigos[i].posY, vetor_de_inimigos[i].altura,
                                    vetor_de_inimigos[i].largura,vetor_de_inimigos[i].vivo)){
-
+                                    
                                     vetor_de_inimigos[i].qtdvidas--;
+                                
+
+                                    if(vetor_de_inimigos[i].qtdvidas ==1){
+                                        vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
+                                        vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
+                                     }  
+                                    else if(vetor_de_inimigos[i].qtdvidas ==0){
+                                        vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
+                                        vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
+                                     }  
+
+
+                
+
+
+
+
+
 			                        if(vetor_de_inimigos[i].qtdvidas==0){
                                             vetor_de_inimigos[i].vivo = false;
                                     }                                                                                       
@@ -1693,7 +1838,7 @@ void defineAtributos(){
 
      
     inimigo_aux_fase3.posX = 30; 
-    inimigo_aux_fase3.posY = 80;
+    inimigo_aux_fase3.posY = 70;
     inimigo_aux_fase3.largura = 7;
     inimigo_aux_fase3.altura = 7;
     
@@ -1733,6 +1878,9 @@ void defineAtributos(){
         vetor_de_inimigos[i].vivo = true;
         vetor_de_inimigos[i].qtdvidas=2;
         vetor_de_inimigos[i].dash=false;
+        vidaFase3.frameAtual_vetor[i]=0;
+        vidaFase3.somador_vetor[i]=0;
+
     }
     kakashi.frameAtual = 0;
     kakashi.somador = 0;
@@ -1786,6 +1934,9 @@ void defineAtributos(){
     sasore.contadorDeFrame = 0;
     sasore.qtdTotalFrame=12;
     sasore.velocidadeDoFrame = 0.8;
+
+    vidaFase3.qtdTotalFrame=3;
+    vidaFase3.contadorDeFrame = 0;
 
 
 }
