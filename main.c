@@ -1147,25 +1147,22 @@ bool colisao(float posX_projetil,
             float largura_inimigo,
             bool vivo){
 
-    if(posY_projetil+altura_projetil == posY_inimigo){
-        if(posX_projetil+largura_projetil/2 >= posX_inimigo && posX_projetil+largura_projetil/2 <= posX_inimigo+largura_inimigo){
-            if(vivo){
-                return true;        
-            }        
+    //if(posY_projetil+altura_projetil == posY_inimigo){
+        //if(posX_projetil+largura_projetil/2 >= posX_inimigo && posX_projetil+largura_projetil/2 <= posX_inimigo+largura_inimigo){
+            //if(vivo){
+                  //  return true;        
+                //} 
+    if(posY_projetil+altura_projetil>= posY_inimigo && posY_projetil+altura_projetil <= posY_inimigo+altura_inimigo){
+        if(posX_projetil+largura_projetil/2 >= posX_inimigo && posX_projetil+largura_projetil/2 <= posX_inimigo+largura_inimigo){ 
+              
+                if(vivo){
+                    return true;        
+                }        
+            }
         }    
       
-    }
-    /*MELHORAR COLISÃO
-    if(posY_projetil+altura_projetil == posY_inimigo){
-        if((posX_projetil+largura_projetil)*altura_projetil>= posX_inimigo*altura_inimigo && posX_projetil+largura_projetil <= posX_inimigo+largura_inimigo){
-            if(vivo){
-                return true;        
-            }        
-        }    
-      
-    }*/
     
-    
+   
     return false;
 }
 
@@ -1288,11 +1285,11 @@ void desenhaMinhaCena(){
         desenhaNomeDoInimigo(90,92,id_textura_nome4);
         desenhaNomeDoInimigo(50,98,id_textura_nome3);        
                     
-        desenhaBarraDeVidaInimigo(10,95,0);
-        desenhaBarraDeVidaInimigo(10,89,1);
-        desenhaBarraDeVidaInimigo(90,95,2);
+        desenhaBarraDeVidaInimigo(10,95,1);
+        desenhaBarraDeVidaInimigo(10,89,0);
+        desenhaBarraDeVidaInimigo(90,95,4);
         desenhaBarraDeVidaInimigo(90,89,3);
-        desenhaBarraDeVidaInimigo(50,95,4);
+        desenhaBarraDeVidaInimigo(50,95,2);
         
     
         criaVetorInimigos();
@@ -1452,7 +1449,7 @@ void contadorFases(){
                 }
             }    
         }
-        contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+        //contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
@@ -1465,11 +1462,16 @@ void contadorFases(){
                         contador_de_inimigos_mortos++;                
                     }
             }
-           // contador_de_inimigos_mortos=5;
+            //contador_de_inimigos_mortos=5;
             if(contador_de_inimigos_mortos==5){
                 fase++;            
             }
             contador_de_inimigos_mortos = 0;
+    }
+    if(fase == 4){
+        if(boss.qtdvidas==0){
+            //ganhou
+        }    
     }
 }
 
