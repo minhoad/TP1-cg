@@ -48,9 +48,13 @@ typedef struct{
     double qtdTotalFrame;
     double contadorDeFrame;
     double velocidadeDoFrame;
+    double frameAtual_vetor[5];
+    double somador_vetor[5];
+
 }animacao;
 
 
 int cont=0;
 int estado =0;
+
 // 3 shurikens; atirar mais rapido; vara ; em area*/
