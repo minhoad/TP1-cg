@@ -22,6 +22,7 @@ GLuint id_textura_menu_jogar = 0;
 GLuint id_textura_menu_creditos = 0;
 GLuint id_textura_menu_pontuacaomax = 0;
 GLuint id_textura_menu_sair = 0;
+GLuint id_textura_creditos = 0;
 
 GLuint id_textura_vida3fase =0;
 
@@ -53,6 +54,7 @@ void defineTexturas(int fase){
                 id_textura_menu_creditos = carregaTextura("menu_creditos.png");
                 id_textura_menu_pontuacaomax = carregaTextura("menu_pontuacao.png"); 
                 id_textura_menu_sair = carregaTextura("menu_sair.png");
+                id_textura_creditos = carregaTextura("credito.png");
                 contador_vezes_carrega_textura++;
             }
             break;    
@@ -95,7 +97,7 @@ void defineTexturas(int fase){
         case 4:
             if(contador_vezes_carrega_textura==4){
                 id_textura_fundo = carregaTextura("fundo4.png"); 
-                id_textura_inimigo = carregaTextura("konan.png");  
+                id_textura_inimigo = carregaTextura("tobi_sprite.png");  
                 contador_vezes_carrega_textura++;
             }
         default:
