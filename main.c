@@ -45,13 +45,13 @@ animacao kisame;
 animacao sasore;
 animacao vidaFase3;
 
-
+int escolha_no_menu = 0;
 
 bool pause = false;
 
 bool pode_dar_dash = true;
 bool flag = true; // trocar a direção movimento dos inimigos
-int fase=1;
+int fase=0;
 
 int descida_fase2; 
 
@@ -1185,9 +1185,49 @@ bool colisao_no_player(float posX_projetil,
     return false;
 }
 
+void desenhaMenuPrincipal(){
+    glColor3f(1.0,1.0,1.0);
+    glEnable(GL_TEXTURE_2D);
+    switch(escolha_no_menu){
+        case 1:
+            glBindTexture(GL_TEXTURE_2D, id_textura_menu_jogar);
+            break;
+        case 2:
+            glBindTexture(GL_TEXTURE_2D, id_textura_menu_creditos);
+            break;
+        case 3:
+            glBindTexture(GL_TEXTURE_2D, id_textura_menu_pontuacaomax);
+            break;        
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, id_textura_menu_sair);
+            break;
+        default:
+            glBindTexture(GL_TEXTURE_2D, id_textura_menu);
+            break;
+        
+    }
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f(0,0);
+        glVertex2f(0, 0);
+
+        glTexCoord2f(1,0);
+        glVertex2f(100,0);
+        
+        glTexCoord2f(1,1);
+        glVertex2f(100,100);
+
+        glTexCoord2f(0,1);
+        glVertex2f(0,100);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+}
+
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
+    if(fase<=0)desenhaMenuPrincipal();
+
+    else{
     defineTexturas(fase);
     desenhaFundo();
     desenhaPersonagemPrincipal();
@@ -1428,8 +1468,8 @@ void desenhaMinhaCena(){
 		initial_time = final_time;
 		
 	}     
+    }
     
-
     glutSwapBuffers();   
 }
 
@@ -1488,39 +1528,68 @@ void redimensionada(int width, int height){
 void teclaPressionada(unsigned char tecla, int x, int y){
     switch(tecla){
         case 27: //Esc
-            exit(0);
+            if(pause){
+                pause=false;                
+                fase = 0;                 
+                glutTimerFunc(1000/33,gameloop,1); 
+            }
+            else exit(0);
             break;
         case 32: // espaço
-            if(!shuriken.atirar){
-                shuriken.posX  = personagem_principal.posX;
-                shuriken.posY  = personagem_principal.posY;
-                shuriken.atirar = true;
-                naruto.frameAtual = 17;
-                naruto.contadorDeFrame=17;
-                estado = 3;
-                glutPostRedisplay();
+            if(fase>0){
+                if(!shuriken.atirar){
+                    shuriken.posX  = personagem_principal.posX;
+                    shuriken.posY  = personagem_principal.posY;
+                    shuriken.atirar = true;
+                    naruto.frameAtual = 17;
+                    naruto.contadorDeFrame=17;
+                    estado = 3;
+                    glutPostRedisplay();
+                }
+            }
+            else if(fase<=0){
+                switch(escolha_no_menu){
+                    case 1:
+                        reiniciar();
+                        break;
+                    case 2:
+                        //desenhaCreditos();
+                        break;
+                    case 3:
+                        //desenhaPontuacaoMaxima();
+                        break;        
+                    case 4:
+                        exit(0);
+                        break;
+                    default:
+                        break;
+                }            
             }
             break; 
         case 'p':
         case 'P':
-            if(!pause){
-                pause = true;    
+            
+                if(!pause){
+                    pause = true;    
                   
-                break;            
-            }else{
-                pause = false;
-                glutTimerFunc(1000/33,gameloop,1);  
-                break;
-            }
+                    break;            
+                }else{
+                    pause = false;
+                    glutTimerFunc(1000/33,gameloop,1);  
+                    break;
+                }
+   
             break; 
         case 'r':
         case 'R':
-            if(pause){
-                pause = false;   
-                reiniciar();  
-                glutTimerFunc(1000/33,gameloop,1);             
+            if(fase>0){
+                if(pause){
+                    pause = false;   
+                    reiniciar();  
+                    glutTimerFunc(1000/33,gameloop,1);             
+                }
+                reiniciar();
             }
-            reiniciar();
             break;  
         default:
             break;        
@@ -1564,6 +1633,14 @@ void teclaIPressionada(int tecla, int x, int y){
                 estado = 2;       
             }
             break;
+        
+        case GLUT_KEY_UP:
+            if(fase<=0)if(escolha_no_menu>0)escolha_no_menu --;
+            break;
+        case GLUT_KEY_DOWN:
+            if(fase<=0)if(escolha_no_menu<5)escolha_no_menu++;
+            break;
+        
         default:
             break;
         }
