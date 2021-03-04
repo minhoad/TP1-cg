@@ -17,9 +17,15 @@ GLuint id_textura_nome4=0;
 GLuint id_textura_nome5=0;
 GLuint id_texturas = 0;
 
+GLuint id_textura_menu = 0;
+GLuint id_textura_menu_jogar = 0;
+GLuint id_textura_menu_creditos = 0;
+GLuint id_textura_menu_pontuacaomax = 0;
+GLuint id_textura_menu_sair = 0;
+
 GLuint id_textura_vida3fase =0;
 
-int contador_vezes_carrega_textura=1;
+int contador_vezes_carrega_textura=0;
 int contador_de_texturas_inimigos =0;
 
 GLuint carregaTextura(const char* arquivo){
@@ -40,6 +46,16 @@ GLuint carregaTextura(const char* arquivo){
 void defineTexturas(int fase){
  
     switch(fase){
+        case 0:
+            if(contador_vezes_carrega_textura==0){
+                id_textura_menu = carregaTextura("menu.png");
+                id_textura_menu_jogar = carregaTextura("menu_jogar.png");
+                id_textura_menu_creditos = carregaTextura("menu_creditos.png");
+                id_textura_menu_pontuacaomax = carregaTextura("menu_pontuacao.png"); 
+                id_textura_menu_sair = carregaTextura("menu_sair.png");
+                contador_vezes_carrega_textura++;
+            }
+            break;    
         case 1:
             if(contador_vezes_carrega_textura==1){
                 id_textura_personagem_principal = carregaTextura("unnamed.png");
