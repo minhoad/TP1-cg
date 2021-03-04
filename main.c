@@ -26,9 +26,6 @@ Auxiliar_de_criacao_de_obj inimigo_aux_fase3; // auxiliar da segunda fase
 Arma shuriken; // aliado
 Arma kunai; // inimigo
 
-//int contador_de_tiros;
-//int maximo_de_tiros_na_tela_fase3 = 2;
-
 formacao inimigo_primeira_fase; // PRIMEIRA FASE
 formacao matriz_inimigos[3][10]; // SEGUNDA FASE
 formacao vetor_de_inimigos[5]; // TERCEIRA FASE
@@ -44,6 +41,7 @@ animacao pain;
 animacao kisame;
 animacao sasore;
 animacao vidaFase3;
+animacao tobi;
 
 int escolha_no_menu = 0;
 
@@ -53,10 +51,12 @@ bool pode_dar_dash = true;
 bool flag = true; // trocar a direção movimento dos inimigos
 int fase=0;
 
+int creditos_ou_pontuacao;
+
 int descida_fase2; 
 
 int tempo,tempo_limite;
-//int descida_fase3 = 0;
+
 
 //          IMPLEMENTAR
 //int maximo_de_tiros_tela_fase2 = 2;         
@@ -836,37 +836,184 @@ void desenhaInimigo(float posX,float posY,float largura,float altura){
         
     }
     else if(fase == 4){
-        glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
-        glPushMatrix();
+        if(boss.dash==false){
+            if(flag){
+                if(tobi.frameAtual >= tobi.contadorDeFrame && tobi.frameAtual != tobi.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    tobi.vert1_x = 0.0 + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador* tobi.contadorDeFrame;
+                    tobi.vert4_x = 0.0 + tobi.somador * tobi.contadorDeFrame;
+
+                    tobi.vert1_y = 0.0;
+                    tobi.vert2_y = 0.0;
+                    tobi.vert3_y = 1.0;
+                    tobi.vert4_y = 1.0;
+
+                    tobi.somador = 1/tobi.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                    tobi.contadorDeFrame++;  
+                }
         
+                if(tobi.frameAtual > tobi.qtdTotalFrame-16){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                    //printf("ok\n");
+                    tobi.frameAtual = 0;
+                    tobi.contadorDeFrame =  0;
+                    tobi.vert1_x = 0.0;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame;
+                    tobi.vert4_x = 0.0;
+                    tobi.somador = 0;
+            
+                 }
+        
+
+
+            tobi.frameAtual = tobi.frameAtual + tobi.velocidadeDoFrame;
+            }
+        if(!flag){
+                if(tobi.frameAtual >= tobi.contadorDeFrame && tobi.frameAtual != tobi.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    
+                    tobi.vert1_x = 0.0 + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador* tobi.contadorDeFrame;
+                    tobi.vert4_x = 0.0 + tobi.somador * tobi.contadorDeFrame;
+
+                    tobi.vert1_y = 0.0;
+                    tobi.vert2_y = 0.0;
+                    tobi.vert3_y = 1.0;
+                    tobi.vert4_y = 1.0;  
+
+                    tobi.somador = 1/tobi.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                    tobi.contadorDeFrame++;  
+                }
+                
+                if(tobi.frameAtual > tobi.qtdTotalFrame-10 || tobi.vert1_x < 1/tobi.qtdTotalFrame * (tobi.qtdTotalFrame-16)){//volta para posicao inicial da imagem para fazer a animaçao dnv
+     
+
+
+                    tobi.somador=1/tobi.qtdTotalFrame;
+                    tobi.frameAtual = tobi.qtdTotalFrame - 16;
+                    tobi.contadorDeFrame =  tobi.qtdTotalFrame - 16;
+                    tobi.vert1_x = tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert4_x = tobi.somador * tobi.contadorDeFrame;
+                    
+                 }
+       
+            tobi.frameAtual = tobi.frameAtual + tobi.velocidadeDoFrame;
+            }
+        }
+
+    if(boss.dash == true){
+        if(flag){
+                if(tobi.frameAtual >= tobi.contadorDeFrame && tobi.frameAtual != tobi.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    //printf("okok\n");
+                    tobi.vert1_x = tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador* tobi.contadorDeFrame;
+                    tobi.vert4_x = tobi.somador * tobi.contadorDeFrame;
+
+                    tobi.vert1_y = 0.0;
+                    tobi.vert2_y = 0.0;
+                    tobi.vert3_y = 1.0;
+                    tobi.vert4_y = 1.0;
+
+                    tobi.somador = 1/tobi.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                    tobi.contadorDeFrame++;  
+                }
+        
+                if(tobi.frameAtual > tobi.qtdTotalFrame-5 || tobi.vert1_x < 1/tobi.qtdTotalFrame * (tobi.qtdTotalFrame-10)){//volta para posicao inicial da imagem para fazer a animaçao dnv
+                    //printf("ok\n");
+                    tobi.frameAtual = 12;
+                    tobi.contadorDeFrame =  12;
+                    tobi.somador = 1/tobi.qtdTotalFrame;
+                    tobi.vert1_x = tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert4_x = tobi.somador * tobi.contadorDeFrame;
+                    
+            
+                 }
+     
+            tobi.frameAtual = tobi.frameAtual + 0.3;
+            }
+
+        if(!flag){
+                if(tobi.frameAtual >= tobi.contadorDeFrame && tobi.frameAtual != tobi.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+                    
+                    tobi.vert1_x = tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador* tobi.contadorDeFrame;
+                    tobi.vert4_x = tobi.somador * tobi.contadorDeFrame;
+
+                    tobi.vert1_y = 0.0;
+                    tobi.vert2_y = 0.0;
+                    tobi.vert3_y = 1.0;
+                    tobi.vert4_y = 1.0;  
+
+                    tobi.somador = 1/tobi.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+                    tobi.contadorDeFrame++;  
+                }
+                
+                if(tobi.frameAtual > tobi.qtdTotalFrame || tobi.vert1_x < 1/tobi.qtdTotalFrame * (tobi.qtdTotalFrame-5)){//volta para posicao inicial da imagem para fazer a animaçao dnv
+     
+
+
+                    tobi.somador=1/tobi.qtdTotalFrame;
+                    tobi.frameAtual = 17;
+                    tobi.contadorDeFrame =  17;
+                    tobi.vert1_x = tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert2_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert3_x = 1/tobi.qtdTotalFrame + tobi.somador * tobi.contadorDeFrame;
+                    tobi.vert4_x = tobi.somador * tobi.contadorDeFrame;
+                    
+                 }
+       
+            tobi.frameAtual = tobi.frameAtual + 0.3;
+            }
+
+
+    }
+        
+
+
+        glBindTexture(GL_TEXTURE_2D, id_textura_inimigo);
+        
+        glPushMatrix();
+
         glTranslatef(posX, posY, 0);
         
         glBegin(GL_TRIANGLE_FAN);
-            glTexCoord2f(0,0);
-            glVertex2f(-largura/2, -altura/2);
+                                
+            glTexCoord2f(tobi.vert1_x, tobi.vert1_y); //
+            glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
 
-            glTexCoord2f(1,0);
-            glVertex2f(largura/2, -altura/2);
-            
-            glTexCoord2f(1,1);
-            glVertex2f(largura/2, altura/2);
+            glTexCoord2f(tobi.vert2_x, tobi.vert2_y); //
+            glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+     
+            glTexCoord2f(tobi.vert3_x, tobi.vert3_y); //
+            glVertex3f( largura/2,  altura/2,0); // |     | // 15 , 20
 
-            glTexCoord2f(0,1);
-            glVertex2f(-largura/2, altura/2);
+            glTexCoord2f(tobi.vert4_x, tobi.vert4_y); //
+            glVertex3f(-largura/2,  altura/2,0); // v1---v2 // -15, 20
 
-            glEnd();
-            glPopMatrix();
-            glDisable(GL_TEXTURE_2D);
-       }
+        glEnd();
+        
+        glPopMatrix();
+
+        }
+
+       
 }
 
 
-void desenhaFundo(){
+void desenhaFundo(GLuint x){
     
     glColor3f(1,1,1);
     
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_textura_fundo);
+    glBindTexture(GL_TEXTURE_2D, x);
     
     glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(0,0);
@@ -1225,11 +1372,13 @@ void desenhaMenuPrincipal(){
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);
-    if(fase<=0)desenhaMenuPrincipal();
-
+    if(fase<=0){
+    desenhaMenuPrincipal();
+    if(creditos_ou_pontuacao==1)desenhaFundo(id_textura_creditos);
+    }
     else{
     defineTexturas(fase);
-    desenhaFundo();
+    desenhaFundo(id_textura_fundo);
     desenhaPersonagemPrincipal();
 
     if(fase==1){
@@ -1533,6 +1682,10 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 fase = 0;                 
                 glutTimerFunc(1000/33,gameloop,1); 
             }
+            else if(escolha_no_menu==2){
+                creditos_ou_pontuacao = 0;   
+                glutTimerFunc(1000/33,gameloop,1);         
+            }
             else exit(0);
             break;
         case 32: // espaço
@@ -1553,7 +1706,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                         reiniciar();
                         break;
                     case 2:
-                        //desenhaCreditos();
+                        creditos_ou_pontuacao = 1; // Quando eh 1 credito
                         break;
                     case 3:
                         //desenhaPontuacaoMaxima();
@@ -1568,7 +1721,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
             break; 
         case 'p':
         case 'P':
-            
+            if(fase>0){
                 if(!pause){
                     pause = true;    
                   
@@ -1578,7 +1731,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                     glutTimerFunc(1000/33,gameloop,1);  
                     break;
                 }
-   
+            }
             break; 
         case 'r':
         case 'R':
@@ -1665,6 +1818,8 @@ void movimentoInimigoUltimaFase(){
             if(tempo==aux){
                 
                 boss.dash = true;
+                tobi.frameAtual = 12;
+                tobi.contadorDeFrame =  12;
             }
             boss.posX+=1;
         }
@@ -1685,6 +1840,8 @@ void movimentoInimigoUltimaFase(){
             if(tempo==aux){
                 
                 boss.dash = true;
+                tobi.frameAtual = 17;
+                tobi.contadorDeFrame =  17;
             }
             boss.posX -=1;
         }
@@ -1938,7 +2095,7 @@ void defineAtributos(){
     boss.largura = 10;
     boss.altura = 10;
     boss.vivo = true;
-    boss.qtdvidas = 5;
+    boss.qtdvidas = 3;
     boss.dash =false;
 
     shuriken.largura = 4;
@@ -2017,7 +2174,14 @@ void defineAtributos(){
     vidaFase3.qtdTotalFrame=3;
     vidaFase3.contadorDeFrame = 0;
 
+    tobi.frameAtual = 0;
+    tobi.somador = 0;
+    tobi.contadorDeFrame = 0;
+    tobi.qtdTotalFrame=22;
+    tobi.velocidadeDoFrame = 0.4;
 
+    
+    creditos_ou_pontuacao = 0;
 }
 
 
