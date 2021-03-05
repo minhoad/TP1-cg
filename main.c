@@ -47,6 +47,8 @@ int escolha_no_menu = 0;
 
 bool pause = false;
 
+int perdeu_ou_jogando_ou_ganhou=0; // 0=jogando ;-1 = perdeu; +1 = ganhou
+
 bool pode_dar_dash = true;
 bool flag = true; // trocar a direção movimento dos inimigos
 int fase=0;
@@ -1371,254 +1373,262 @@ void desenhaMenuPrincipal(){
 
 
 void desenhaMinhaCena(){
-    glClear(GL_COLOR_BUFFER_BIT);
-    if(fase<=0){
-    desenhaMenuPrincipal();
-    if(creditos_ou_pontuacao==1)desenhaFundo(id_textura_creditos);
-    }
-    else{
-    defineTexturas(fase);
-    desenhaFundo(id_textura_fundo);
-    desenhaPersonagemPrincipal();
-
-    if(fase==1){
-        if(inimigo_primeira_fase.vivo)
-            desenhaInimigo(inimigo_primeira_fase.posX,
-                            inimigo_primeira_fase.posY,
-                            inimigo_primeira_fase.altura,
-                            inimigo_primeira_fase.largura);                        
-        
-        if(shuriken.atirar){
-            desenhaProjetil(1);  
-            if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                           shuriken.altura, inimigo_primeira_fase.posX,
-                           inimigo_primeira_fase.posY, inimigo_primeira_fase.altura,
-                           inimigo_primeira_fase.largura,inimigo_primeira_fase.vivo)){
-			
-			inimigo_primeira_fase.qtdvidas--;
-			if(inimigo_primeira_fase.qtdvidas==0){
-                           inimigo_primeira_fase.vivo = false;
-                       }                            
-                           shuriken.atirar = false;         
-                                                          }
-            shuriken.posY++;
-            if(shuriken.posY > 99){//QUando sair da tela
-                shuriken.atirar = false;  
-            }
+    glClear(GL_COLOR_BUFFER_BIT);    
+    if(perdeu_ou_jogando_ou_ganhou==0){
+        if(fase<=0){
+            desenhaMenuPrincipal();
+            if(creditos_ou_pontuacao==1)desenhaFundo(id_textura_creditos);
         }
-  
-        if(kunai.atirar){
-            desenhaProjetil(2);
-            if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
-                       personagem_principal.posX, personagem_principal.posY,
-                       personagem_principal.altura, personagem_principal.largura,
-                       personagem_principal.qtdvidas)){
-                        
-                       personagem_principal.qtdvidas--;
-                       kunai.atirar = false;
-                       
-                       }
-                       kunai.posY--;
-                       if(kunai.posY<0){
-                           kunai.atirar=false;
-                       }            
-        }        
-        
-    }else if(fase==2){
-            criaMatrizInimigos(); //2°fase
-            if(shuriken.atirar){
-                desenhaProjetil(1);
-                for(int i=0;i<3;i++){
-                    for(int j=0;j<10;j++){
+        else{
+            defineTexturas(fase);
+            desenhaFundo(id_textura_fundo);
+            desenhaPersonagemPrincipal();
 
-                        if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                                   shuriken.altura, matriz_inimigos[i][j].posX,
-                                   matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
-                                   matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
-
-                                    matriz_inimigos[i][j].qtdvidas--;
-			                        if(matriz_inimigos[i][j].qtdvidas==0){
-                                            matriz_inimigos[i][j].vivo = false;
-                                    }                                                                                       
+            if(fase==1){
+                if(inimigo_primeira_fase.vivo)
+                    desenhaInimigo(inimigo_primeira_fase.posX,
+                                    inimigo_primeira_fase.posY,
+                                    inimigo_primeira_fase.altura,
+                                    inimigo_primeira_fase.largura);                        
+                
+                if(shuriken.atirar){
+                    desenhaProjetil(1);  
+                    if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                   shuriken.altura, inimigo_primeira_fase.posX,
+                                   inimigo_primeira_fase.posY, inimigo_primeira_fase.altura,
+                                   inimigo_primeira_fase.largura,inimigo_primeira_fase.vivo)){
+			        
+			        inimigo_primeira_fase.qtdvidas--;
+			        if(inimigo_primeira_fase.qtdvidas==0){
+                                   inimigo_primeira_fase.vivo = false;
+                               }                            
                                    shuriken.atirar = false;         
-                        }
+                                                                  }
+                    shuriken.posY++;
+                    if(shuriken.posY > 99){//QUando sair da tela
+                        shuriken.atirar = false;  
                     }
                 }
-                shuriken.posY++;
-                if(shuriken.posY > 99){//QUando sair da tela
-                    shuriken.atirar = false;  
-                }
-            }
-            if(kunai.atirar){
-                desenhaProjetil(2);
-                if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
-                       personagem_principal.posX, personagem_principal.posY,
-                       personagem_principal.altura, personagem_principal.largura,
-                       personagem_principal.qtdvidas)){
-                        
-                       personagem_principal.qtdvidas--;
-                       kunai.atirar = false;
-                       
-                       }
-                       kunai.posY--;
-                       if(kunai.posY<0){
-                           kunai.atirar=false;
-                       }               
-            
-            }
-    } 
-    else if(fase==3){
-        desenhaNomeDoInimigo(10,98,id_textura_nome1);
-        desenhaNomeDoInimigo(10,92,id_textura_nome2);
-        desenhaNomeDoInimigo(90,98,id_textura_nome5);
-        desenhaNomeDoInimigo(90,92,id_textura_nome4);
-        desenhaNomeDoInimigo(50,98,id_textura_nome3);        
-                    
-        desenhaBarraDeVidaInimigo(10,95,1);
-        desenhaBarraDeVidaInimigo(10,89,0);
-        desenhaBarraDeVidaInimigo(90,95,4);
-        desenhaBarraDeVidaInimigo(90,89,3);
-        desenhaBarraDeVidaInimigo(50,95,2);
-        
-    
-        criaVetorInimigos();
-        
-        if(shuriken.atirar){
-                desenhaProjetil(1);
-                for(int i=0;i<5;i++){
-                       if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                                   shuriken.altura, vetor_de_inimigos[i].posX,
-                                   vetor_de_inimigos[i].posY, vetor_de_inimigos[i].altura,
-                                   vetor_de_inimigos[i].largura,vetor_de_inimigos[i].vivo)){
-                                    
-                                    vetor_de_inimigos[i].qtdvidas--;
+          
+                if(kunai.atirar){
+                    desenhaProjetil(2);
+                    if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
+                               personagem_principal.posX, personagem_principal.posY,
+                               personagem_principal.altura, personagem_principal.largura,
+                               personagem_principal.qtdvidas)){
                                 
-
-                                    if(vetor_de_inimigos[i].qtdvidas ==1){
-                                        vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
-                                        vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
-                                     }  
-                                    else if(vetor_de_inimigos[i].qtdvidas ==0){
-                                        vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
-                                        vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
-                                     }  
-
-
+                               personagem_principal.qtdvidas--;
+                               kunai.atirar = false;
+                               
+                               }
+                               kunai.posY--;
+                               if(kunai.posY<0){
+                                   kunai.atirar=false;
+                               }            
+                }        
                 
+            }else if(fase==2){
+                    criaMatrizInimigos(); //2°fase
+                    if(shuriken.atirar){
+                        desenhaProjetil(1);
+                        for(int i=0;i<3;i++){
+                            for(int j=0;j<10;j++){
 
+                                if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                           shuriken.altura, matriz_inimigos[i][j].posX,
+                                           matriz_inimigos[i][j].posY, matriz_inimigos[i][j].altura,
+                                           matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
 
-
-
-
-			                        if(vetor_de_inimigos[i].qtdvidas==0){
-                                            vetor_de_inimigos[i].vivo = false;
-                                    }                                                                                       
-                                   shuriken.atirar = false;  
-                                       
+                                            matriz_inimigos[i][j].qtdvidas--;
+			                                if(matriz_inimigos[i][j].qtdvidas==0){
+                                                    matriz_inimigos[i][j].vivo = false;
+                                            }                                                                                       
+                                           shuriken.atirar = false;         
+                                }
+                            }
                         }
+                        shuriken.posY++;
+                        if(shuriken.posY > 99){//QUando sair da tela
+                            shuriken.atirar = false;  
+                        }
+                    }
+                    if(kunai.atirar){
+                        desenhaProjetil(2);
+                        if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
+                               personagem_principal.posX, personagem_principal.posY,
+                               personagem_principal.altura, personagem_principal.largura,
+                               personagem_principal.qtdvidas)){
+                                
+                               personagem_principal.qtdvidas--;
+                               kunai.atirar = false;
+                               
+                               }
+                               kunai.posY--;
+                               if(kunai.posY<0){
+                                   kunai.atirar=false;
+                               }               
                     
-                }
-                shuriken.posY++;
-                if(shuriken.posY > 99){//QUando sair da tela
-                    shuriken.atirar = false;  
-              
-                }
-            }
-        if(kunai.atirar){
-                desenhaProjetil(2);
-                if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
-                       personagem_principal.posX, personagem_principal.posY,
-                       personagem_principal.altura, personagem_principal.largura,
-                       personagem_principal.qtdvidas)){
-                        
-                       personagem_principal.qtdvidas--;
-                       kunai.atirar = false;
-                       
-                       }
-                       kunai.posY-=2;
-                       if(kunai.posY<0){
-                           kunai.atirar=false;
-                       }               
+                    }
+            } 
+            else if(fase==3){
+                desenhaNomeDoInimigo(10,98,id_textura_nome1);
+                desenhaNomeDoInimigo(10,92,id_textura_nome2);
+                desenhaNomeDoInimigo(90,98,id_textura_nome5);
+                desenhaNomeDoInimigo(90,92,id_textura_nome4);
+                desenhaNomeDoInimigo(50,98,id_textura_nome3);        
+                            
+                desenhaBarraDeVidaInimigo(10,95,1);
+                desenhaBarraDeVidaInimigo(10,89,0);
+                desenhaBarraDeVidaInimigo(90,95,4);
+                desenhaBarraDeVidaInimigo(90,89,3);
+                desenhaBarraDeVidaInimigo(50,95,2);
+                
             
-            }    
-        
-    }
-    else if(fase==4){
-        desenhaInimigo(boss.posX,boss.posY,boss.altura,boss.largura);
-        if(shuriken.atirar){
-                desenhaProjetil(1);
-                for(int i=0;i<5;i++){
-                       if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
-                                   shuriken.altura, boss.posX,
-                                   boss.posY, boss.altura,
-                                   boss.largura,boss.vivo)){
-
-                                    boss.qtdvidas--;
-			                        if(boss.qtdvidas==0){
-                                            boss.vivo = false;
-                                    }                                                                                       
-                                   shuriken.atirar = false;  
-                                       
-                        }
-                    
-                }
-                shuriken.posY++;
-                if(shuriken.posY > 99){//QUando sair da tela
-                    shuriken.atirar = false;  
-              
-                }
-        }
-        if(kunai.atirar){
-            desenhaProjetil(2);
-            if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
-                       personagem_principal.posX, personagem_principal.posY,
-                       personagem_principal.altura, personagem_principal.largura,
-                       personagem_principal.qtdvidas)){
-                        
-                       personagem_principal.qtdvidas--;
-                       kunai.atirar = false;
-                       
-                       }
-                       kunai.posY-=2;
-                       if(kunai.posY<0){
-                           kunai.atirar=false;
-                       }            
-        }    
-        if(boss.dash){
+                criaVetorInimigos();
                 
-               if(colisao_no_player(boss.posX, boss.posY, boss.largura, boss.altura,
-                       personagem_principal.posX, personagem_principal.posY,
-                       personagem_principal.altura, personagem_principal.largura,
-                       personagem_principal.qtdvidas)){
-                        
-                           personagem_principal.qtdvidas--;
-                           boss.dash = false;
-                           boss.posY=80;
-                           boss.posX=50;
-                       }
-                       boss.posY--;
-                       if(boss.posY<0){
-                           boss.dash=false;
-                           boss.posY=80;
-                           boss.posX=50;
-                       }            
-        }         
-        
-    } 
-        
-    if(pause)desenhaPause();
+                if(shuriken.atirar){
+                        desenhaProjetil(1);
+                        for(int i=0;i<5;i++){
+                               if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                           shuriken.altura, vetor_de_inimigos[i].posX,
+                                           vetor_de_inimigos[i].posY, vetor_de_inimigos[i].altura,
+                                           vetor_de_inimigos[i].largura,vetor_de_inimigos[i].vivo)){
+                                            
+                                            vetor_de_inimigos[i].qtdvidas--;
+                                        
 
-    frame_count++;
-	final_time = time(NULL);
-	if (final_time - initial_time > 0){
-		contador_fps = frame_count/(final_time-initial_time);
-		printf("FPS: %f\n", contador_fps);
-		frame_count = 0;
-		initial_time = final_time;
-		
-	}     
+                                            if(vetor_de_inimigos[i].qtdvidas ==1){
+                                                vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
+                                                vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
+                                             }  
+                                            else if(vetor_de_inimigos[i].qtdvidas ==0){
+                                                vidaFase3.frameAtual_vetor[i] = vidaFase3.frameAtual_vetor[i]+1;
+                                                vidaFase3.somador_vetor[i] = 1/vidaFase3.qtdTotalFrame;
+                                             }  
+
+
+                        
+
+
+
+
+
+			                                if(vetor_de_inimigos[i].qtdvidas==0){
+                                                    vetor_de_inimigos[i].vivo = false;
+                                            }                                                                                       
+                                           shuriken.atirar = false;  
+                                               
+                                }
+                            
+                        }
+                        shuriken.posY++;
+                        if(shuriken.posY > 99){//QUando sair da tela
+                            shuriken.atirar = false;  
+                      
+                        }
+                    }
+                if(kunai.atirar){
+                        desenhaProjetil(2);
+                        if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
+                               personagem_principal.posX, personagem_principal.posY,
+                               personagem_principal.altura, personagem_principal.largura,
+                               personagem_principal.qtdvidas)){
+                                
+                               personagem_principal.qtdvidas--;
+                               kunai.atirar = false;
+                               
+                               }
+                               kunai.posY-=2;
+                               if(kunai.posY<0){
+                                   kunai.atirar=false;
+                               }               
+                    
+                    }    
+                
+            }
+            else if(fase==4){
+                desenhaInimigo(boss.posX,boss.posY,boss.altura,boss.largura);
+                if(shuriken.atirar){
+                        desenhaProjetil(1);
+                        for(int i=0;i<5;i++){
+                               if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
+                                           shuriken.altura, boss.posX,
+                                           boss.posY, boss.altura,
+                                           boss.largura,boss.vivo)){
+
+                                            boss.qtdvidas--;
+			                                if(boss.qtdvidas==0){
+                                                    boss.vivo = false;
+                                            }                                                                                       
+                                           shuriken.atirar = false;  
+                                               
+                                }
+                            
+                        }
+                        shuriken.posY++;
+                        if(shuriken.posY > 99){//QUando sair da tela
+                            shuriken.atirar = false;  
+                      
+                        }
+                }
+                if(kunai.atirar){
+                    desenhaProjetil(2);
+                    if(colisao_no_player(kunai.posX, kunai.posY, kunai.largura, kunai.altura,
+                               personagem_principal.posX, personagem_principal.posY,
+                               personagem_principal.altura, personagem_principal.largura,
+                               personagem_principal.qtdvidas)){
+                                
+                               personagem_principal.qtdvidas--;
+                               kunai.atirar = false;
+                               
+                               }
+                               kunai.posY-=2;
+                               if(kunai.posY<0){
+                                   kunai.atirar=false;
+                               }            
+                }    
+                if(boss.dash){
+                        
+                       if(colisao_no_player(boss.posX, boss.posY, boss.largura, boss.altura,
+                               personagem_principal.posX, personagem_principal.posY,
+                               personagem_principal.altura, personagem_principal.largura,
+                               personagem_principal.qtdvidas)){
+                                
+                                   personagem_principal.qtdvidas--;
+                                   boss.dash = false;
+                                   boss.posY=80;
+                                   boss.posX=50;
+                               }
+                               boss.posY--;
+                               if(boss.posY<0){
+                                   boss.dash=false;
+                                   boss.posY=80;
+                                   boss.posX=50;
+                               }            
+                }         
+            
+            } 
+            
+            if(pause)desenhaPause();
+
+            frame_count++;
+	        final_time = time(NULL);
+	        if (final_time - initial_time > 0){
+		        contador_fps = frame_count/(final_time-initial_time);
+		        printf("FPS: %f\n", contador_fps);
+		        frame_count = 0;
+		        initial_time = final_time;
+		        
+	        }     
+        }
     }
-    
+    else if(perdeu_ou_jogando_ou_ganhou>0){
+        desenhaFundo(id_textura_win);    
+    }
+    else if(perdeu_ou_jogando_ou_ganhou<0){
+        //printf("ok");
+        desenhaFundo(id_textura_lose);    
+    }
     glutSwapBuffers();   
 }
 
@@ -1628,7 +1638,8 @@ void contadorFases(){
         
         if(!inimigo_primeira_fase.vivo){
             fase++;        
-        }  
+        }
+        
     }
     else if(fase==2){
         for(int i=0;i<3;i++){
@@ -1642,6 +1653,7 @@ void contadorFases(){
         if(contador_de_inimigos_mortos==30){
             fase++;
         }
+        
         contador_de_inimigos_mortos = 0;   
     }
     
@@ -1655,11 +1667,12 @@ void contadorFases(){
             if(contador_de_inimigos_mortos==5){
                 fase++;            
             }
+           
             contador_de_inimigos_mortos = 0;
     }
     if(fase == 4){
         if(boss.qtdvidas==0){
-            //ganhou
+            perdeu_ou_jogando_ou_ganhou = 1;
         }    
     }
 }
@@ -1683,10 +1696,10 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 glutTimerFunc(1000/33,gameloop,1); 
             }
             else if(escolha_no_menu==2){
-                creditos_ou_pontuacao = 0;   
-                glutTimerFunc(1000/33,gameloop,1);         
+                creditos_ou_pontuacao = 0;           
             }
             else exit(0);
+
             break;
         case 32: // espaço
             if(fase>0){
@@ -1718,6 +1731,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                         break;
                 }            
             }
+
             break; 
         case 'p':
         case 'P':
@@ -1743,7 +1757,18 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 }
                 reiniciar();
             }
-            break;  
+            break; 
+        /*case 'b':
+        case 'B':
+            if(perdeu_ou_jogando_ou_ganhou<0){
+                fase = 0;  
+               // glutTimerFunc(1000/33,gameloop,1);          
+            } 
+            else if(perdeu_ou_jogando_ou_ganhou>0){
+                fase = 0;  
+                //glutTimerFunc(1000/33,gameloop,1); 
+            }
+            break;*/
         default:
             break;        
     }
@@ -2024,9 +2049,31 @@ int* projetilrandom_fase2(){ // fase 2
     return posXY; // dar free nisso sempre
 }
 
+void verificaSePerdeu(){
+    if(personagem_principal.qtdvidas==0){
+        perdeu_ou_jogando_ou_ganhou=-1;
+    }
+    if(fase==1){
+        if(inimigo_primeira_fase.posY <= 10){
+            perdeu_ou_jogando_ou_ganhou = -1;
+        }
+    }
+    if(fase == 2){ // AQUI
+        for(int i=0;i<3;i++){
+            for(int j=0;j<10;j++){
+                if(matriz_inimigos[i][j].vivo==true && matriz_inimigos[i][j].posY<=10){
+                        //printf("meu pau");
+                        perdeu_ou_jogando_ou_ganhou = -1;      
+                        break;                            
+                }        
+            }
+        }    
+    }
+}
 
 void gameloop(int tempo){
     contadorFases();
+    
     relogio();
     if(fase==1)movimentoInimigoPrimeiraFase();
     else if(fase==2)movimentoInimigoSegundaFase();
@@ -2042,7 +2089,8 @@ void gameloop(int tempo){
         glutPostRedisplay(); 
          
     }
-  
+    verificaSePerdeu();
+    
 }
 
 void relogio(){
@@ -2055,7 +2103,8 @@ void relogio(){
 
 
 void defineAtributos(){
-    //contador_de_tiros=0;
+   
+    perdeu_ou_jogando_ou_ganhou=0;
 
     tempo=0;
     tempo_limite = 100;
@@ -2106,7 +2155,8 @@ void defineAtributos(){
         for(int j = 0;j<10;j++){
             matriz_inimigos[i][j].vivo = true;   
             matriz_inimigos[i][j].qtdvidas=1;
-            matriz_inimigos[i][j].dash = false;     
+            matriz_inimigos[i][j].dash = false; 
+            matriz_inimigos[i][j].posY=80;    
         }    
     }
 
