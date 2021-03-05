@@ -26,6 +26,9 @@ GLuint id_textura_creditos = 0;
 
 GLuint id_textura_vida3fase =0;
 
+GLuint id_textura_lose = 0;
+GLuint id_textura_win = 0;
+
 int contador_vezes_carrega_textura=0;
 int contador_de_texturas_inimigos =0;
 
@@ -55,6 +58,8 @@ void defineTexturas(int fase){
                 id_textura_menu_pontuacaomax = carregaTextura("menu_pontuacao.png"); 
                 id_textura_menu_sair = carregaTextura("menu_sair.png");
                 id_textura_creditos = carregaTextura("credito.png");
+                id_textura_win = carregaTextura("win.png");
+                id_textura_lose = carregaTextura("gameover.png");
                 contador_vezes_carrega_textura++;
             }
             break;    
