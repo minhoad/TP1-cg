@@ -22,6 +22,8 @@ Jogador personagem_principal;
 
 Auxiliar_de_criacao_de_obj inimigo_aux;// auxiliar da segunda fase p/criar os zetsu`s
 Auxiliar_de_criacao_de_obj inimigo_aux_fase3; // auxiliar da segunda fase
+Auxiliar_de_criacao_de_obj sapin_obj;
+
 
 Arma shuriken; // aliado
 Arma kunai; // inimigo
@@ -43,6 +45,7 @@ animacao sasore;
 animacao vidaFase3;
 animacao tobi;
 animacao vidaBoss;
+animacao sapin;
 
 int escolha_no_menu = 0;
 
@@ -1455,12 +1458,79 @@ void desenhaMenuPrincipal(){
     glDisable(GL_TEXTURE_2D);
 }
 
+void desenhaSapin(float posX,float posY,float largura,float altura){
+    glColor3f(1,1,1);
+    
+    glEnable(GL_TEXTURE_2D);
+    
+        if(sapin.frameAtual >= sapin.contadorDeFrame && sapin.frameAtual != sapin.contadorDeFrame){//Sempre que o FrameAtual for igual a qtdDeFrame passa para a proxima imagem
+            //printf("okok\n");
+            sapin.vert1_x = 0.0 + sapin.somador * sapin.contadorDeFrame;
+            sapin.vert2_x = 1/sapin.qtdTotalFrame + sapin.somador * sapin.contadorDeFrame;
+            sapin.vert3_x = 1/sapin.qtdTotalFrame + sapin.somador* sapin.contadorDeFrame;
+            sapin.vert4_x = 0.0 + sapin.somador * sapin.contadorDeFrame;
+
+            sapin.vert1_y = 0.0;
+            sapin.vert2_y = 0.0;
+            sapin.vert3_y = 1.0;
+            sapin.vert4_y = 1.0;  
+
+            sapin.somador = 1/sapin.qtdTotalFrame;// O somador mais os vertice da a proxima imagem
+            sapin.contadorDeFrame++;  
+        }
+
+        if(sapin.frameAtual > sapin.qtdTotalFrame){//volta para posicao inicial da imagem para fazer a animaçao dnv
+            //printf("ok\n");
+            sapin.frameAtual = 0;
+            sapin.contadorDeFrame =  0;
+            sapin.vert1_x = 0.0;
+            sapin.vert2_x = 1/sapin.qtdTotalFrame;
+            sapin.vert3_x = 1/sapin.qtdTotalFrame;
+            sapin.vert4_x = 0.0;
+            sapin.somador = 1/sapin.qtdTotalFrame;
+         }
+
+        sapin.frameAtual = sapin.frameAtual + sapin.velocidadeDoFrame;   
+
+        glBindTexture(GL_TEXTURE_2D, id_textura_sapin);
+    
+        glPushMatrix();
+
+        glTranslatef(posX, posY, 0);
+    
+        glBegin(GL_TRIANGLE_FAN);
+                            
+            glTexCoord2f(sapin.vert1_x, sapin.vert1_y); //
+            glVertex3f(-largura/2, -altura/2,0); // v4---v3 // -15 ,-20
+
+            glTexCoord2f(sapin.vert2_x, sapin.vert2_y); //
+            glVertex3f( largura/2, -altura/2,0); // |     | // 15 ,-20
+     
+            glTexCoord2f(sapin.vert3_x, sapin.vert3_y); //
+            glVertex3f( largura/2,  altura/2,0); // |     | // 15 , 20
+
+            glTexCoord2f(sapin.vert4_x, sapin.vert4_y); //
+            glVertex3f(-largura/2,  altura/2,0); // v1---v2 // -15, 20
+
+    glEnd();
+    
+    glPopMatrix();
+}
+
+
 
 void desenhaMinhaCena(){
     glClear(GL_COLOR_BUFFER_BIT);    
+	
     if(perdeu_ou_jogando_ou_ganhou==0){
+    	
         if(fase<=0){
             desenhaMenuPrincipal();
+            if(creditos_ou_pontuacao==0){
+            	desenhaSapin(sapin_obj.posX, sapin_obj.posY, sapin_obj.largura, sapin_obj.altura);
+            	sapin_obj.posX++;
+            	if(sapin_obj.posX>100)sapin_obj.posX=0;
+            }
             if(creditos_ou_pontuacao==1)desenhaFundo(id_textura_creditos);
         }
         else{
@@ -1723,11 +1793,10 @@ void desenhaMinhaCena(){
 	        }     
         }
     }
-    else if(perdeu_ou_jogando_ou_ganhou>0){
+    else if(perdeu_ou_jogando_ou_ganhou==1){
         desenhaFundo(id_textura_win);    
     }
-    else if(perdeu_ou_jogando_ou_ganhou<0){
-        //printf("ok");
+    else if(perdeu_ou_jogando_ou_ganhou==-1){
         desenhaFundo(id_textura_lose);    
     }
     glutSwapBuffers();   
@@ -1859,17 +1928,17 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                 reiniciar();
             }
             break; 
-        /*case 'b':
+        case 'b':
         case 'B':
-            if(perdeu_ou_jogando_ou_ganhou<0){
-                fase = 0;  
-               // glutTimerFunc(1000/33,gameloop,1);          
+            if(perdeu_ou_jogando_ou_ganhou!=0){
+       		fase=0;
+       		perdeu_ou_jogando_ou_ganhou=0;
+       		setup();
+       		glutPostRedisplay();
+                        
             } 
-            else if(perdeu_ou_jogando_ou_ganhou>0){
-                fase = 0;  
-                //glutTimerFunc(1000/33,gameloop,1); 
-            }
-            break;*/
+          
+            break;
         default:
             break;        
     }
@@ -2151,15 +2220,15 @@ int* projetilrandom_fase2(){ // fase 2
 }
 
 void verificaSePerdeu(){
-    if(personagem_principal.qtdvidas==0){
+    if(personagem_principal.qtdvidas==0 && perdeu_ou_jogando_ou_ganhou != -1){
         perdeu_ou_jogando_ou_ganhou=-1;
     }
-    if(fase==1){
+    if(fase==1 && perdeu_ou_jogando_ou_ganhou != -1){
         if(inimigo_primeira_fase.posY <= 10){
             perdeu_ou_jogando_ou_ganhou = -1;
         }
     }
-    if(fase == 2){ // AQUI
+    if(fase == 2 && perdeu_ou_jogando_ou_ganhou != -1){ // AQUI
         for(int i=0;i<3;i++){
             for(int j=0;j<10;j++){
                 if(matriz_inimigos[i][j].vivo==true && matriz_inimigos[i][j].posY<=10){
@@ -2209,6 +2278,11 @@ void defineAtributos(){
 
     tempo=0;
     tempo_limite = 100;
+
+    sapin_obj.posX = 3;	
+    sapin_obj.posY = 10;	
+    sapin_obj.largura = 15;
+    sapin_obj.altura = 15;	
 
     personagem_principal.posX = 50;
     personagem_principal.posY = 10;
@@ -2335,6 +2409,13 @@ void defineAtributos(){
     vidaBoss.contadorDeFrame = 0;
     vidaBoss.frameAtual=0;
     vidaBoss.somador=0;
+    
+    sapin.frameAtual = 0;
+    sapin.somador = 0;
+    sapin.contadorDeFrame = 0;
+    sapin.qtdTotalFrame=4;
+    sapin.velocidadeDoFrame = 0.1;
+
     
     creditos_ou_pontuacao = 0;
 }
