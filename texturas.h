@@ -10,6 +10,7 @@ GLuint id_textura_projetil=0;
 GLuint id_pause=0;
 GLuint id_textura_projetil_inimigo=0;
 
+GLuint id_textura_sapin = 0;
 GLuint id_textura_nome1=0;
 GLuint id_textura_nome2=0;
 GLuint id_textura_nome3=0;
@@ -61,6 +62,7 @@ void defineTexturas(int fase){
                 id_textura_creditos = carregaTextura("credito.png");
                 id_textura_win = carregaTextura("win.png");
                 id_textura_lose = carregaTextura("gameover.png");
+                id_textura_sapin = carregaTextura("sprites_naruto_sapo.png");
                 contador_vezes_carrega_textura++;
             }
             break;    
