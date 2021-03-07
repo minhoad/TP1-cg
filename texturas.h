@@ -9,7 +9,8 @@ GLuint id_textura_inimigo4=0; // 		FASE 3
 GLuint id_textura_projetil=0; 
 GLuint id_pause=0;
 GLuint id_textura_projetil_inimigo=0;
-
+GLuint id_textura_cabecanaruto = 0;
+GLuint id_textura_vidaNaruto = 0;
 GLuint id_textura_sapin = 0;
 GLuint id_textura_nome1=0;
 GLuint id_textura_nome2=0;
@@ -68,6 +69,8 @@ void defineTexturas(int fase){
             break;    
         case 1:
             if(contador_vezes_carrega_textura==1){
+            	id_textura_cabecanaruto = carregaTextura("cabecita_naruto.png");
+            	id_textura_vidaNaruto = carregaTextura("vidaBoss.png");
                 id_textura_personagem_principal = carregaTextura("unnamed.png");
                 id_textura_inimigo = carregaTextura("kakashi_intro.png");
                 id_textura_fundo = carregaTextura("cenario.png");
