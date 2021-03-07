@@ -42,6 +42,7 @@ animacao kisame;
 animacao sasore;
 animacao vidaFase3;
 animacao tobi;
+animacao vidaBoss;
 
 int escolha_no_menu = 0;
 
@@ -1139,6 +1140,89 @@ void desenhaBarraDeVidaInimigo(int posX,int posY,int i){// Ainda em teste, pois 
 
 }
 
+void desenhaBarraBoss(){// Ainda em teste, pois a barra de vida nao esta tao bonita.
+    
+    //glColor3f(1.0,1.0,1.0);
+    if(boss.qtdvidas==3){
+                vidaBoss.vert1_x = vidaBoss.somador * vidaBoss.frameAtual;
+                vidaBoss.vert2_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert3_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert4_x = vidaBoss.somador * vidaBoss.frameAtual;
+
+                vidaBoss.vert1_y = 0.0;
+                vidaBoss.vert2_y = 0.0;
+                vidaBoss.vert3_y = 1.0;
+                vidaBoss.vert4_y = 1.0;
+
+
+
+    }
+
+    else if(boss.qtdvidas==2){
+                vidaBoss.vert1_x = vidaBoss.somador * vidaBoss.frameAtual;
+                vidaBoss.vert2_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert3_x = vidaBoss.somador * vidaBoss.frameAtual+ 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert4_x = vidaBoss.somador * vidaBoss.frameAtual;
+
+                vidaBoss.vert1_y = 0.0;
+                vidaBoss.vert2_y = 0.0;
+                vidaBoss.vert3_y = 1.0;
+                vidaBoss.vert4_y = 1.0;
+
+
+
+    }
+    else if(boss.qtdvidas==1){
+                vidaBoss.vert1_x = vidaBoss.somador* vidaBoss.frameAtual;
+                vidaBoss.vert2_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert3_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert4_x = vidaBoss.somador * vidaBoss.frameAtual;
+
+                vidaBoss.vert1_y = 0.0;
+                vidaBoss.vert2_y = 0.0;
+                vidaBoss.vert3_y = 1.0;
+                vidaBoss.vert4_y = 1.0;
+}
+    else if(boss.qtdvidas==0){
+                vidaBoss.vert1_x = vidaBoss.somador * vidaBoss.frameAtual;
+                vidaBoss.vert2_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert3_x = vidaBoss.somador * vidaBoss.frameAtual + 1/vidaBoss.qtdTotalFrame;
+                vidaBoss.vert4_x = vidaBoss.somador * vidaBoss.frameAtual;
+
+                vidaBoss.vert1_y = 0.0;
+                vidaBoss.vert2_y = 0.0;
+                vidaBoss.vert3_y = 1.0;
+                vidaBoss.vert4_y = 1.0;
+}
+
+    glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    glBindTexture(GL_TEXTURE_2D,id_vidaBoss);
+    
+    glPushMatrix();
+
+    glTranslatef(50, 95, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(vidaBoss.vert1_x, vidaBoss.vert1_y);
+        glVertex2f(-4, -2.0); // v3---v2
+
+        glTexCoord2f(vidaBoss.vert2_x, vidaBoss.vert2_y);
+        glVertex2f(4, -2.0); // |     |
+
+        glTexCoord2f(vidaBoss.vert3_x, vidaBoss.vert3_y);
+        glVertex2f(4, 2.0); // |     |
+
+        glTexCoord2f(vidaBoss.vert4_x, vidaBoss.vert4_y);
+        glVertex2f(-4, 2.0); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+
+}
 
 
 
@@ -1547,24 +1631,41 @@ void desenhaMinhaCena(){
                 
             }
             else if(fase==4){
+            	 desenhaNomeDoInimigo(50,98,id_textura_nomeBoss);
+            	 desenhaBarraBoss();
                 desenhaInimigo(boss.posX,boss.posY,boss.altura,boss.largura);
                 if(shuriken.atirar){
                         desenhaProjetil(1);
-                        for(int i=0;i<5;i++){
+                        
                                if(colisao(shuriken.posX,shuriken.posY, shuriken.largura,    
                                            shuriken.altura, boss.posX,
                                            boss.posY, boss.altura,
                                            boss.largura,boss.vivo)){
 
                                             boss.qtdvidas--;
-			                                if(boss.qtdvidas==0){
+                                            
+                                            if(boss.qtdvidas ==2){
+                                                vidaBoss.frameAtual = vidaBoss.frameAtual+1;
+                                                vidaBoss.somador = 1/vidaBoss.qtdTotalFrame;
+                                             }  
+                                            else if(boss.qtdvidas ==1){
+                                                vidaBoss.frameAtual = vidaBoss.frameAtual+1;
+                                                vidaBoss.somador= 1/vidaBoss.qtdTotalFrame;
+                                             }
+						else if(boss.qtdvidas ==0){
+                                                vidaBoss.frameAtual= vidaBoss.frameAtual+1;
+                                                vidaBoss.somador = 1/vidaBoss.qtdTotalFrame;
+                                             }
+
+                                            
+			                     if(boss.qtdvidas==0){
                                                     boss.vivo = false;
                                             }                                                                                       
                                            shuriken.atirar = false;  
                                                
                                 }
                             
-                        }
+                       
                         shuriken.posY++;
                         if(shuriken.posY > 99){//QUando sair da tela
                             shuriken.atirar = false;  
@@ -2230,6 +2331,10 @@ void defineAtributos(){
     tobi.qtdTotalFrame=22;
     tobi.velocidadeDoFrame = 0.4;
 
+    vidaBoss.qtdTotalFrame=4;
+    vidaBoss.contadorDeFrame = 0;
+    vidaBoss.frameAtual=0;
+    vidaBoss.somador=0;
     
     creditos_ou_pontuacao = 0;
 }
