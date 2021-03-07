@@ -16,7 +16,8 @@ GLuint id_textura_nome3=0;
 GLuint id_textura_nome4=0;
 GLuint id_textura_nome5=0;
 GLuint id_texturas = 0;
-
+GLuint id_textura_nomeBoss = 0;
+GLuint id_vidaBoss = 0;
 GLuint id_textura_menu = 0;
 GLuint id_textura_menu_jogar = 0;
 GLuint id_textura_menu_creditos = 0;
@@ -101,6 +102,8 @@ void defineTexturas(int fase){
             break;
         case 4:
             if(contador_vezes_carrega_textura==4){
+            	id_vidaBoss = carregaTextura("vidaBoss.png");
+            	id_textura_nomeBoss = carregaTextura("nome_tobi.png");
                 id_textura_fundo = carregaTextura("fundo4.png"); 
                 id_textura_inimigo = carregaTextura("tobi_sprite.png");  
                 contador_vezes_carrega_textura++;
