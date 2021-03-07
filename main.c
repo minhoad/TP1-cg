@@ -46,6 +46,7 @@ animacao vidaFase3;
 animacao tobi;
 animacao vidaBoss;
 animacao sapin;
+animacao vidaNaruto;
 
 int escolha_no_menu = 0;
 
@@ -63,12 +64,12 @@ int descida_fase2;
 
 int tempo,tempo_limite;
 
-
-//          IMPLEMENTAR
-//int maximo_de_tiros_tela_fase2 = 2;         
-//int contador_de_tiros_tela = 0;       
+int pontuacao_total, maior_pontuacao, tempo_de_jogo; 
+     
 
 double frame_count = 0,initial_time, final_time, contador_fps=0; // para o contador de fps
+
+FILE *data;
 
 void desenhaPersonagemPrincipal(){
     glEnable(GL_TEXTURE_2D);
@@ -1517,6 +1518,124 @@ void desenhaSapin(float posX,float posY,float largura,float altura){
     glPopMatrix();
 }
 
+void desenhaCabecaNaruto(int posX,int posY, GLuint x){// Ainda em teste, pois a barra de vida nao esta tao bonita.
+    
+    //glColor3f(1.0,1.0,1.0);
+
+    glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    glBindTexture(GL_TEXTURE_2D,x);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(0, 0);
+        glVertex2f(-3, -3); // v3---v2
+
+        glTexCoord2f(1, 0);
+        glVertex2f(3, -3); // |     |
+
+        glTexCoord2f(1, 1);
+        glVertex2f(3, 3); // |     |
+
+        glTexCoord2f(0, 1);
+        glVertex2f(-3, 3); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+
+}
+
+void desenhaBarraNaruto(){// Ainda em teste, pois a barra de vida nao esta tao bonita.
+    
+    //glColor3f(1.0,1.0,1.0);
+    if(personagem_principal.qtdvidas==3){
+                vidaNaruto.vert1_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+                vidaNaruto.vert2_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert3_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert4_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+
+                vidaNaruto.vert1_y = 0.0;
+                vidaNaruto.vert2_y = 0.0;
+                vidaNaruto.vert3_y = 1.0;
+                vidaNaruto.vert4_y = 1.0;
+
+
+
+    }
+
+    else if(personagem_principal.qtdvidas==2){
+                vidaNaruto.vert1_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+                vidaNaruto.vert2_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert3_x = vidaNaruto.somador * vidaNaruto.frameAtual+ 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert4_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+
+                vidaNaruto.vert1_y = 0.0;
+                vidaNaruto.vert2_y = 0.0;
+                vidaNaruto.vert3_y = 1.0;
+                vidaNaruto.vert4_y = 1.0;
+
+
+
+    }
+    else if(personagem_principal.qtdvidas==1){
+                vidaNaruto.vert1_x = vidaNaruto.somador* vidaNaruto.frameAtual;
+                vidaNaruto.vert2_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert3_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert4_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+
+                vidaNaruto.vert1_y = 0.0;
+                vidaNaruto.vert2_y = 0.0;
+                vidaNaruto.vert3_y = 1.0;
+                vidaNaruto.vert4_y = 1.0;
+}
+    else if(personagem_principal.qtdvidas==0){
+                vidaNaruto.vert1_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+                vidaNaruto.vert2_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert3_x = vidaNaruto.somador * vidaNaruto.frameAtual + 1/vidaNaruto.qtdTotalFrame;
+                vidaNaruto.vert4_x = vidaNaruto.somador * vidaNaruto.frameAtual;
+
+                vidaNaruto.vert1_y = 0.0;
+                vidaNaruto.vert2_y = 0.0;
+                vidaNaruto.vert3_y = 1.0;
+                vidaNaruto.vert4_y = 1.0;
+}
+
+    glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    glBindTexture(GL_TEXTURE_2D,id_textura_vidaNaruto);
+    
+    glPushMatrix();
+
+    glTranslatef(11, 3, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(vidaNaruto.vert1_x, vidaNaruto.vert1_y);
+        glVertex2f(-4, -2.0); // v3---v2
+
+        glTexCoord2f(vidaNaruto.vert2_x, vidaNaruto.vert2_y);
+        glVertex2f(4, -2.0); // |     |
+
+        glTexCoord2f(vidaNaruto.vert3_x, vidaNaruto.vert3_y);
+        glVertex2f(4, 2.0); // |     |
+
+        glTexCoord2f(vidaNaruto.vert4_x, vidaNaruto.vert4_y);
+        glVertex2f(-4, 2.0); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+
+}
+
+
 
 
 void desenhaMinhaCena(){
@@ -1539,6 +1658,8 @@ void desenhaMinhaCena(){
             desenhaPersonagemPrincipal();
 
             if(fase==1){
+            	desenhaCabecaNaruto(3,4,id_textura_cabecanaruto);
+            	desenhaBarraNaruto();
                 if(inimigo_primeira_fase.vivo)
                     desenhaInimigo(inimigo_primeira_fase.posX,
                                     inimigo_primeira_fase.posY,
@@ -1553,6 +1674,9 @@ void desenhaMinhaCena(){
                                    inimigo_primeira_fase.largura,inimigo_primeira_fase.vivo)){
 			        
 			        inimigo_primeira_fase.qtdvidas--;
+			        
+			        pontuacao_total+=10; // QUANDO ACERTA 
+			        
 			        if(inimigo_primeira_fase.qtdvidas==0){
                                    inimigo_primeira_fase.vivo = false;
                                }                            
@@ -1561,7 +1685,9 @@ void desenhaMinhaCena(){
                     shuriken.posY++;
                     if(shuriken.posY > 99){//QUando sair da tela
                         shuriken.atirar = false;  
+                        pontuacao_total-=5; // QUANDO ERRA
                     }
+             
                 }
           
                 if(kunai.atirar){
@@ -1572,7 +1698,21 @@ void desenhaMinhaCena(){
                                personagem_principal.qtdvidas)){
                                 
                                personagem_principal.qtdvidas--;
+                               pontuacao_total-=10; // QUANDO EH ACERTADO
                                kunai.atirar = false;
+                               if(personagem_principal.qtdvidas ==2){
+                                                vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                                vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                                             }  
+                               else if(personagem_principal.qtdvidas ==1){
+                                          vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                          vidaNaruto.somador= 1/vidaNaruto.qtdTotalFrame;
+                               }
+                               else if(personagem_principal.qtdvidas ==0){
+                                        vidaNaruto.frameAtual= vidaNaruto.frameAtual+1;
+                                        vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             }
+
                                
                                }
                                kunai.posY--;
@@ -1582,6 +1722,8 @@ void desenhaMinhaCena(){
                 }        
                 
             }else if(fase==2){
+            	     desenhaCabecaNaruto(3,4,id_textura_cabecanaruto);
+            	     desenhaBarraNaruto();	
                     criaMatrizInimigos(); //2°fase
                     if(shuriken.atirar){
                         desenhaProjetil(1);
@@ -1594,16 +1736,19 @@ void desenhaMinhaCena(){
                                            matriz_inimigos[i][j].largura,matriz_inimigos[i][j].vivo)){
 
                                             matriz_inimigos[i][j].qtdvidas--;
+                                            pontuacao_total+=10; // QUANDO ACERTA
 			                                if(matriz_inimigos[i][j].qtdvidas==0){
                                                     matriz_inimigos[i][j].vivo = false;
                                             }                                                                                       
                                            shuriken.atirar = false;         
                                 }
+                                
                             }
                         }
                         shuriken.posY++;
                         if(shuriken.posY > 99){//QUando sair da tela
                             shuriken.atirar = false;  
+                            pontuacao_total-=5; // QUANDO ERRA
                         }
                     }
                     if(kunai.atirar){
@@ -1614,7 +1759,20 @@ void desenhaMinhaCena(){
                                personagem_principal.qtdvidas)){
                                 
                                personagem_principal.qtdvidas--;
+                               pontuacao_total-=10; // QUANDO EH ACERTADO
                                kunai.atirar = false;
+                               if(personagem_principal.qtdvidas ==2){
+                                                vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                                vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                                             }  
+                               else if(personagem_principal.qtdvidas ==1){
+                                          vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                          vidaNaruto.somador= 1/vidaNaruto.qtdTotalFrame;
+                               }
+                               else if(personagem_principal.qtdvidas ==0){
+                                        vidaNaruto.frameAtual= vidaNaruto.frameAtual+1;
+                                        vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             }
                                
                                }
                                kunai.posY--;
@@ -1625,6 +1783,8 @@ void desenhaMinhaCena(){
                     }
             } 
             else if(fase==3){
+                desenhaCabecaNaruto(3,4,id_textura_cabecanaruto);
+                desenhaBarraNaruto();
                 desenhaNomeDoInimigo(10,98,id_textura_nome1);
                 desenhaNomeDoInimigo(10,92,id_textura_nome2);
                 desenhaNomeDoInimigo(90,98,id_textura_nome5);
@@ -1649,6 +1809,7 @@ void desenhaMinhaCena(){
                                            vetor_de_inimigos[i].largura,vetor_de_inimigos[i].vivo)){
                                             
                                             vetor_de_inimigos[i].qtdvidas--;
+                                            pontuacao_total+=10; // QUANDO ACERTA
                                         
 
                                             if(vetor_de_inimigos[i].qtdvidas ==1){
@@ -1678,6 +1839,7 @@ void desenhaMinhaCena(){
                         shuriken.posY++;
                         if(shuriken.posY > 99){//QUando sair da tela
                             shuriken.atirar = false;  
+                            pontuacao_total-=5; // QUANDO ERRA
                       
                         }
                     }
@@ -1689,7 +1851,21 @@ void desenhaMinhaCena(){
                                personagem_principal.qtdvidas)){
                                 
                                personagem_principal.qtdvidas--;
+                               pontuacao_total-=10; // QUANDO EH ACERTADO
                                kunai.atirar = false;
+                               
+                               if(personagem_principal.qtdvidas ==2){
+                                                vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                                vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                                             }  
+                               else if(personagem_principal.qtdvidas ==1){
+                                          vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                          vidaNaruto.somador= 1/vidaNaruto.qtdTotalFrame;
+                               }
+                               else if(personagem_principal.qtdvidas ==0){
+                                        vidaNaruto.frameAtual= vidaNaruto.frameAtual+1;
+                                        vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             }
                                
                                }
                                kunai.posY-=2;
@@ -1701,6 +1877,8 @@ void desenhaMinhaCena(){
                 
             }
             else if(fase==4){
+                 desenhaCabecaNaruto(3,4,id_textura_cabecanaruto);
+                 desenhaBarraNaruto();
             	 desenhaNomeDoInimigo(50,98,id_textura_nomeBoss);
             	 desenhaBarraBoss();
                 desenhaInimigo(boss.posX,boss.posY,boss.altura,boss.largura);
@@ -1713,6 +1891,7 @@ void desenhaMinhaCena(){
                                            boss.largura,boss.vivo)){
 
                                             boss.qtdvidas--;
+                                            pontuacao_total+=10;
                                             
                                             if(boss.qtdvidas ==2){
                                                 vidaBoss.frameAtual = vidaBoss.frameAtual+1;
@@ -1739,7 +1918,7 @@ void desenhaMinhaCena(){
                         shuriken.posY++;
                         if(shuriken.posY > 99){//QUando sair da tela
                             shuriken.atirar = false;  
-                      
+                      	     pontuacao_total-=5; // QUANDO ERRA
                         }
                 }
                 if(kunai.atirar){
@@ -1750,7 +1929,20 @@ void desenhaMinhaCena(){
                                personagem_principal.qtdvidas)){
                                 
                                personagem_principal.qtdvidas--;
+                               pontuacao_total-=10; // QUANDO EH ACERTADO
                                kunai.atirar = false;
+                               if(personagem_principal.qtdvidas ==2){
+                                                vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                                vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                                             }  
+                               else if(personagem_principal.qtdvidas ==1){
+                                          vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                          vidaNaruto.somador= 1/vidaNaruto.qtdTotalFrame;
+                               }
+                               else if(personagem_principal.qtdvidas ==0){
+                                        vidaNaruto.frameAtual= vidaNaruto.frameAtual+1;
+                                        vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             }
                                
                                }
                                kunai.posY-=2;
@@ -1766,9 +1958,22 @@ void desenhaMinhaCena(){
                                personagem_principal.qtdvidas)){
                                 
                                    personagem_principal.qtdvidas--;
+                                   pontuacao_total-=10;
                                    boss.dash = false;
                                    boss.posY=80;
                                    boss.posX=50;
+                           if(personagem_principal.qtdvidas ==2){
+                                                vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                                vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             }  
+                               else if(personagem_principal.qtdvidas ==1){
+                                          vidaNaruto.frameAtual = vidaNaruto.frameAtual+1;
+                                          vidaNaruto.somador= 1/vidaNaruto.qtdTotalFrame;
+                               }
+                               else if(personagem_principal.qtdvidas ==0){
+                                        vidaNaruto.frameAtual= vidaNaruto.frameAtual+1;
+                                        vidaNaruto.somador = 1/vidaNaruto.qtdTotalFrame;
+                             	}
                                }
                                boss.posY--;
                                if(boss.posY<0){
@@ -1807,7 +2012,8 @@ void contadorFases(){
     if(fase==1){
         
         if(!inimigo_primeira_fase.vivo){
-            fase++;        
+            fase++;      
+            pontuacao_total+=100; // QUANDO PASSA DE FASE 
         }
         
     }
@@ -1819,9 +2025,10 @@ void contadorFases(){
                 }
             }    
         }
-        //contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+       contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
+            pontuacao_total+=100; // QUANDO PASSA DE FASE
         }
         
         contador_de_inimigos_mortos = 0;   
@@ -1836,6 +2043,7 @@ void contadorFases(){
             //contador_de_inimigos_mortos=5;
             if(contador_de_inimigos_mortos==5){
                 fase++;            
+                pontuacao_total+=100; // QUANDO PASSA DE FASE
             }
            
             contador_de_inimigos_mortos = 0;
@@ -1843,6 +2051,7 @@ void contadorFases(){
     if(fase == 4){
         if(boss.qtdvidas==0){
             perdeu_ou_jogando_ou_ganhou = 1;
+            pontuacao_total+=150; // QUANDO GANHA O JOGO
         }    
     }
 }
@@ -1856,6 +2065,17 @@ void redimensionada(int width, int height){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+
+/*void salvar_pontuacao(){
+	data = fopen("data.txt", "w+r");
+	if(data == NULL){
+		exit(1);
+	}
+	if()
+	fprintf(data,"Pontos:(%d), Tempo: (%d)", maior_pontuacao, tempo_de_jogo);
+	fclose; 
+
+}*/
 
 void teclaPressionada(unsigned char tecla, int x, int y){
     switch(tecla){
@@ -2265,6 +2485,7 @@ void gameloop(int tempo){
 
 void relogio(){
 		tempo++;
+		tempo_de_jogo++;
 		if(tempo>tempo_limite){
 			tempo = 0;
 		}
@@ -2275,7 +2496,10 @@ void relogio(){
 void defineAtributos(){
    
     perdeu_ou_jogando_ou_ganhou=0;
-
+    
+    pontuacao_total = 0;
+    tempo_de_jogo = 0;		
+		
     tempo=0;
     tempo_limite = 100;
 
@@ -2415,6 +2639,12 @@ void defineAtributos(){
     sapin.contadorDeFrame = 0;
     sapin.qtdTotalFrame=4;
     sapin.velocidadeDoFrame = 0.1;
+    
+    vidaNaruto.qtdTotalFrame=4;
+    vidaNaruto.contadorDeFrame = 0;
+    vidaNaruto.frameAtual=0;
+    vidaNaruto.somador=0;
+
 
     
     creditos_ou_pontuacao = 0;
