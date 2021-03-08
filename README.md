@@ -47,7 +47,7 @@ colocar sua senha, depois escreva chmod +x nomedoarquivo.sh(tornando o arquivo e
 6) Depois disso é só rodar com ./nomedoarquivo.sh 
 
 7) Todas bibliotecas instaladas! Para jogar baixe o zip do repositório ou faça um git-clone para seu desktop. Se tiver baixado o zip primeiramente descomprima os arquivos, depois acesse a pasta da última versão com o comando:
-cd 'pasta-onde-foi-clonado-ou-baixado'/minhoad/TP1-cg
+cd 'pasta-onde-foi-clonado-ou-baixado'/TP1-cg
 
 e depois dê o comando:
 
