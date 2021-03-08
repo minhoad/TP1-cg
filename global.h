@@ -1,3 +1,5 @@
+#ifndef GLOBAL_H
+#define GLOBAL_H
 #include<stdbool.h>
 
 typedef struct{
@@ -57,4 +59,6 @@ typedef struct{
 int cont=0;
 int estado =0;
 
+
 // 3 shurikens; atirar mais rapido; vara ; em area*/
+#endif
