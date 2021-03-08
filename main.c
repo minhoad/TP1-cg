@@ -1,13 +1,13 @@
-#include<SOIL/SOIL.h>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include"texturas.h"
 #include<stdlib.h>
 #include<stdio.h>
 #include"global.h"
 #include<stdbool.h>
-#include"texturas.h"
 #include<time.h>
 #include<stdlib.h>
+#include<unistd.h>
+
+
 
 void contador();
 void gameloop(int tempo);
@@ -17,6 +17,7 @@ int* projetilrandom_fase2();
 void criaVetorInimigos();
 void desenhaDashInimigo();
 void relogio();
+void salvar_pontuacao();
 
 Jogador personagem_principal;
 
@@ -47,10 +48,15 @@ animacao tobi;
 animacao vidaBoss;
 animacao sapin;
 animacao vidaNaruto;
+animacao pontuacao;
+animacao pontuacao2;
+animacao pontuacao3;
 
 int escolha_no_menu = 0;
 
-bool pause = false;
+int verificaSAVE;
+
+bool pause_t = false;
 
 int perdeu_ou_jogando_ou_ganhou=0; // 0=jogando ;-1 = perdeu; +1 = ganhou
 
@@ -1635,6 +1641,411 @@ void desenhaBarraNaruto(){// Ainda em teste, pois a barra de vida nao esta tao b
 
 }
 
+void desenhaAuxPontuacaoCasa1(int auxPontuacao,int posX, int posY){
+
+glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+    if(auxPontuacao%10==5){
+        pontuacao.frameAtual=5;
+        pontuacao.vert1_x = 0.0 + pontuacao.somador * pontuacao.frameAtual;
+        pontuacao.vert2_x = 1/pontuacao.qtdTotalFrame + pontuacao.somador * pontuacao.frameAtual;
+        pontuacao.vert3_x = 1/pontuacao.qtdTotalFrame + pontuacao.somador* pontuacao.frameAtual;
+        pontuacao.vert4_x = 0.0 + pontuacao.somador * pontuacao.frameAtual;
+
+        pontuacao.vert1_y = 0.0;
+        pontuacao.vert2_y = 0.0;
+        pontuacao.vert3_y = 1.0;
+        pontuacao.vert4_y = 1.0;    
+
+    }
+    else if(auxPontuacao%10==0){
+        pontuacao.frameAtual=0;
+        pontuacao.vert1_x = 0.0 + pontuacao.somador * pontuacao.frameAtual;
+        pontuacao.vert2_x = 1/pontuacao.qtdTotalFrame + pontuacao.somador * pontuacao.frameAtual;
+        pontuacao.vert3_x = 1/pontuacao.qtdTotalFrame + pontuacao.somador* pontuacao.frameAtual;
+        pontuacao.vert4_x = 0.0 + pontuacao.somador * pontuacao.frameAtual;
+
+        pontuacao.vert1_y = 0.0;
+        pontuacao.vert2_y = 0.0;
+        pontuacao.vert3_y = 1.0;
+        pontuacao.vert4_y = 1.0;    
+
+    }
+    
+    glBindTexture(GL_TEXTURE_2D,id_textura_numeros);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(pontuacao.vert1_x, pontuacao.vert1_y);
+        glVertex2f(-5, -5); // v3---v2
+
+        glTexCoord2f(pontuacao.vert2_x, pontuacao.vert2_y);
+        glVertex2f(5, -5); // |     |
+
+        glTexCoord2f(pontuacao.vert3_x, pontuacao.vert3_y);
+        glVertex2f(5, 5); // |     |
+
+        glTexCoord2f(pontuacao.vert4_x, pontuacao.vert4_y);
+        glVertex2f(-5, 5); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+}
+
+void desenhaAuxPontuacaoCasa2(int auxPontuacao,int posX, int posY){
+
+glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+        if((auxPontuacao%100)/10 == 0){
+            pontuacao2.frameAtual=0;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 1){
+            pontuacao2.frameAtual=1;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 2){
+            pontuacao2.frameAtual=2;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 3){
+            pontuacao2.frameAtual=3;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 4){
+            pontuacao2.frameAtual=4;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 5){
+            pontuacao2.frameAtual=5;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 0){
+            pontuacao2.frameAtual=5;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 6){
+            pontuacao2.frameAtual=6;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 7){
+            pontuacao2.frameAtual=7;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 8){
+            pontuacao2.frameAtual=8;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+        if((auxPontuacao%100)/10 == 9){
+            pontuacao2.frameAtual=9;
+            pontuacao2.vert1_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert2_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador * pontuacao2.frameAtual;
+            pontuacao2.vert3_x = 1/pontuacao2.qtdTotalFrame + pontuacao2.somador* pontuacao2.frameAtual;
+            pontuacao2.vert4_x = 0.0 + pontuacao2.somador * pontuacao2.frameAtual;
+
+            pontuacao2.vert1_y = 0.0;
+            pontuacao2.vert2_y = 0.0;
+            pontuacao2.vert3_y = 1.0;
+            pontuacao2.vert4_y = 1.0;    
+
+        }
+    
+    glBindTexture(GL_TEXTURE_2D,id_textura_numeros);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(pontuacao2.vert1_x, pontuacao2.vert1_y);
+        glVertex2f(-5, -5); // v3---v2
+
+        glTexCoord2f(pontuacao2.vert2_x, pontuacao2.vert2_y);
+        glVertex2f(5, -5); // |     |
+
+        glTexCoord2f(pontuacao2.vert3_x, pontuacao2.vert3_y);
+        glVertex2f(5, 5); // |     |
+
+        glTexCoord2f(pontuacao2.vert4_x, pontuacao2.vert4_y);
+        glVertex2f(-5, 5); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+}
+
+void desenhaAuxPontuacaoCasa3(int auxPontuacao,int posX, int posY){
+
+glEnable(GL_TEXTURE_2D); //comandos para ativar a textura colocada
+    
+        if(auxPontuacao/100 == 0){
+            pontuacao3.frameAtual=0;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 1){
+            pontuacao3.frameAtual=1;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 2){
+            pontuacao3.frameAtual=2;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100== 3){
+            pontuacao3.frameAtual=3;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 4){
+            pontuacao3.frameAtual=4;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 5){
+            pontuacao3.frameAtual=5;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 0){
+            pontuacao3.frameAtual=5;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 6){
+            pontuacao3.frameAtual=6;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 7){
+            pontuacao3.frameAtual=7;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 8){
+            pontuacao3.frameAtual=8;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+        if(auxPontuacao/100 == 9){
+            pontuacao3.frameAtual=9;
+            pontuacao3.vert1_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert2_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador * pontuacao3.frameAtual;
+            pontuacao3.vert3_x = 1/pontuacao3.qtdTotalFrame + pontuacao3.somador* pontuacao3.frameAtual;
+            pontuacao3.vert4_x = 0.0 + pontuacao3.somador * pontuacao3.frameAtual;
+
+            pontuacao3.vert1_y = 0.0;
+            pontuacao3.vert2_y = 0.0;
+            pontuacao3.vert3_y = 1.0;
+            pontuacao3.vert4_y = 1.0;    
+
+        }
+    
+    glBindTexture(GL_TEXTURE_2D,id_textura_numeros);
+    
+    glPushMatrix();
+
+    glTranslatef(posX, posY, 0);
+    glBegin(GL_TRIANGLE_FAN);
+
+        glTexCoord2f(pontuacao3.vert1_x, pontuacao3.vert1_y);
+        glVertex2f(-5, -5); // v3---v2
+
+        glTexCoord2f(pontuacao3.vert2_x, pontuacao3.vert2_y);
+        glVertex2f(5, -5); // |     |
+
+        glTexCoord2f(pontuacao3.vert3_x, pontuacao3.vert3_y);
+        glVertex2f(5, 5); // |     |
+
+        glTexCoord2f(pontuacao3.vert4_x, pontuacao3.vert4_y);
+        glVertex2f(-5, 5); // v0---v1
+
+    glEnd();
+   
+    glPopMatrix();
+
+
+}
+
+
 
 
 
@@ -1651,6 +2062,25 @@ void desenhaMinhaCena(){
             	if(sapin_obj.posX>100)sapin_obj.posX=0;
             }
             if(creditos_ou_pontuacao==1)desenhaFundo(id_textura_creditos);
+            if(creditos_ou_pontuacao==-1){
+            	int aux1=0,aux2=0;
+            	desenhaFundo(id_textura_pontuacao_maxima);
+            	FILE* auxiliar = fopen("data.txt", "r");
+            	if(auxiliar!=NULL){
+            		while(!feof(auxiliar)){
+            			fscanf(auxiliar, "Pontos:(%d), Tempo: (%d)", &aux1, &aux2);  
+            		}
+            		fclose(auxiliar);	
+            		desenhaAuxPontuacaoCasa1(aux1,32,65);
+		    	desenhaAuxPontuacaoCasa2(aux1,24,65);
+		    	desenhaAuxPontuacaoCasa3(aux1,16,65);
+		    	desenhaAuxPontuacaoCasa1(aux2,82,65);
+		    	desenhaAuxPontuacaoCasa2(aux2,74,65);
+		    	desenhaAuxPontuacaoCasa3(aux2,66,65);
+            	}
+            	
+            }
+            
         }
         else{
             defineTexturas(fase);
@@ -1985,7 +2415,7 @@ void desenhaMinhaCena(){
             
             } 
             
-            if(pause)desenhaPause();
+            if(pause_t)desenhaPause();
 
             frame_count++;
 	        final_time = time(NULL);
@@ -2025,7 +2455,7 @@ void contadorFases(){
                 }
             }    
         }
-       contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
+        //contador_de_inimigos_mortos=30; //PARA VERIFICAR 3° FASE DIRETO DPS DA PRIMEIRA
         if(contador_de_inimigos_mortos==30){
             fase++;
             pontuacao_total+=100; // QUANDO PASSA DE FASE
@@ -2049,9 +2479,12 @@ void contadorFases(){
             contador_de_inimigos_mortos = 0;
     }
     if(fase == 4){
+    	//boss.qtdvidas = 0;
         if(boss.qtdvidas==0){
             perdeu_ou_jogando_ou_ganhou = 1;
             pontuacao_total+=150; // QUANDO GANHA O JOGO
+            if(verificaSAVE==0)
+            salvar_pontuacao();
         }    
     }
 }
@@ -2066,27 +2499,44 @@ void redimensionada(int width, int height){
     glLoadIdentity();
 }
 
-/*void salvar_pontuacao(){
-	data = fopen("data.txt", "w+r");
-	if(data == NULL){
-		exit(1);
+void salvar_pontuacao(){
+	int aux_pontos, aux_tempo;
+	if(access("data.txt",F_OK) != 0){		
+		data = fopen("data.txt", "w");
+		if(data==NULL)exit(1);
+		fprintf(data,"Pontos:(%d), Tempo: (%d)", pontuacao_total, tempo_de_jogo);
+		fclose(data);
+		return; 
 	}
-	if()
-	fprintf(data,"Pontos:(%d), Tempo: (%d)", maior_pontuacao, tempo_de_jogo);
-	fclose; 
-
-}*/
+	data = fopen("data.txt", "r");
+	if(data==NULL)exit(1);	
+	
+	while(!feof(data)){
+		fscanf(data, "Pontos:(%d), Tempo: (%d)", &aux_pontos, &aux_tempo); 
+	}
+	fclose(data);
+	if(pontuacao_total>=aux_pontos){
+		
+			FILE* aux = fopen("data.txt", "w+");
+			fprintf(aux,"Pontos:(%d), Tempo: (%d)", pontuacao_total, (tempo_de_jogo<aux_tempo)?tempo_de_jogo:aux_tempo);
+			fclose(aux);		
+	}
+	verificaSAVE=1;
+}
 
 void teclaPressionada(unsigned char tecla, int x, int y){
     switch(tecla){
         case 27: //Esc
-            if(pause){
-                pause=false;                
+            if(pause_t){
+                pause_t=false;                
                 fase = 0;                 
                 glutTimerFunc(1000/33,gameloop,1); 
             }
-            else if(escolha_no_menu==2){
+            else if(escolha_no_menu==2 && creditos_ou_pontuacao==1){
                 creditos_ou_pontuacao = 0;           
+            }
+            else if(escolha_no_menu==3 && creditos_ou_pontuacao==-1){
+            	creditos_ou_pontuacao = 0;
             }
             else exit(0);
 
@@ -2112,7 +2562,7 @@ void teclaPressionada(unsigned char tecla, int x, int y){
                         creditos_ou_pontuacao = 1; // Quando eh 1 credito
                         break;
                     case 3:
-                        //desenhaPontuacaoMaxima();
+                        creditos_ou_pontuacao = -1; // Quando eh -1 pontuacao max
                         break;        
                     case 4:
                         exit(0);
@@ -2126,12 +2576,12 @@ void teclaPressionada(unsigned char tecla, int x, int y){
         case 'p':
         case 'P':
             if(fase>0){
-                if(!pause){
-                    pause = true;    
+                if(!pause_t){
+                    pause_t = true;    
                   
                     break;            
                 }else{
-                    pause = false;
+                    pause_t = false;
                     glutTimerFunc(1000/33,gameloop,1);  
                     break;
                 }
@@ -2140,8 +2590,8 @@ void teclaPressionada(unsigned char tecla, int x, int y){
         case 'r':
         case 'R':
             if(fase>0){
-                if(pause){
-                    pause = false;   
+                if(pause_t){
+                    pause_t = false;   
                     reiniciar();  
                     glutTimerFunc(1000/33,gameloop,1);             
                 }
@@ -2470,7 +2920,7 @@ void gameloop(int tempo){
     else if(fase==3)movimentoInimigoTerceiraFase();
     else if(fase==4)movimentoInimigoUltimaFase();
     
-    if(!pause){      
+    if(!pause_t){      
         glutPostRedisplay(); // PEDE PARA A CENA SER REDESENHADA ASSIM QUE POSSIVEL 
         glutTimerFunc(1000/33,gameloop,0); // CHAMA NOVAMENTE A FUNÇÃO DE ATT A TELA (recursividade).
          
@@ -2495,6 +2945,7 @@ void relogio(){
 
 void defineAtributos(){
    
+    verificaSAVE=0;	
     perdeu_ou_jogando_ou_ganhou=0;
     
     pontuacao_total = 0;
@@ -2644,9 +3095,20 @@ void defineAtributos(){
     vidaNaruto.contadorDeFrame = 0;
     vidaNaruto.frameAtual=0;
     vidaNaruto.somador=0;
-
-
+ 
+    pontuacao.qtdTotalFrame = 10;
+    pontuacao.somador = 1/pontuacao.qtdTotalFrame;
     
+
+    pontuacao2.qtdTotalFrame = 10;
+    pontuacao2.somador = 1/pontuacao2.qtdTotalFrame;
+    
+
+    pontuacao3.qtdTotalFrame = 10;
+    pontuacao3.somador = 1/pontuacao3.qtdTotalFrame;
+    
+	 
+ 
     creditos_ou_pontuacao = 0;
 }
 
