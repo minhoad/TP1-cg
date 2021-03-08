@@ -1,3 +1,10 @@
+#ifndef TEXTURAS_H
+#define TEXTURAS_H
+#include<SOIL/SOIL.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include<stdio.h>
+
 GLuint id_textura_personagem_principal=0;
 GLuint id_textura_fundo=0;
 GLuint id_textura_inimigo=0;
@@ -26,14 +33,15 @@ GLuint id_textura_menu_creditos = 0;
 GLuint id_textura_menu_pontuacaomax = 0;
 GLuint id_textura_menu_sair = 0;
 GLuint id_textura_creditos = 0;
-
+GLuint id_textura_pontuacao_maxima = 0;
 GLuint id_textura_vida3fase =0;
 
 GLuint id_textura_lose = 0;
 GLuint id_textura_win = 0;
-
+GLuint id_textura_numeros = 0;
 int contador_vezes_carrega_textura=0;
 int contador_de_texturas_inimigos =0;
+
 
 GLuint carregaTextura(const char* arquivo){
     GLuint id_textura = SOIL_load_OGL_texture(
@@ -61,6 +69,8 @@ void defineTexturas(int fase){
                 id_textura_menu_pontuacaomax = carregaTextura("menu_pontuacao.png"); 
                 id_textura_menu_sair = carregaTextura("menu_sair.png");
                 id_textura_creditos = carregaTextura("credito.png");
+                id_textura_pontuacao_maxima = carregaTextura("highscore.png");
+                id_textura_numeros = carregaTextura("numeros_pixel.png");
                 id_textura_win = carregaTextura("win.png");
                 id_textura_lose = carregaTextura("gameover.png");
                 id_textura_sapin = carregaTextura("sprites_naruto_sapo.png");
@@ -118,4 +128,5 @@ void defineTexturas(int fase){
     }
 }
 
-
+ 
+#endif    
