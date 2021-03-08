@@ -10,7 +10,7 @@ sudo apt-get update
 Coloque sua senha para fazer a verificação e aguarde a finalização.
 
 3) Após seu sistema concluir as atualizações, iremos instalar alguns mecanismos necessários para desenvolvermos alguns processos, pelo comando via terminal:
-sudo apt-get install build-essential
+sudo apt-get install build-essential 
 
 No meu caso, todas ferramentas já estão instaladas. Entretanto, caso apareça uma mensagem perguntando se deseja continuar, pressione s e logo em seguida enter.
 
